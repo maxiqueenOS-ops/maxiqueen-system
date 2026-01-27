@@ -307,7 +307,6 @@ body{
       Activar ahora
     </a>
   </div>
-</section>
 
 <!-- ================= RECURSOS DE REFUERZO ================= -->
 <section class="py-24 px-6 bg-black/30 fade-in">
@@ -451,30 +450,23 @@ para pensar, construir y sostener procesos.
 };
 
 const keywordMap = {
-  // Ventas
-  ventas: triggers.ventas.planes,
-  negocio: triggers.ventas.costos,
+  // Ventas reales
   precio: triggers.ventas.planes,
   planes: triggers.ventas.planes,
-  costos: triggers.ventas.costos,
+  costo: triggers.ventas.costos,
+  cuanto: triggers.ventas.costos,
 
   // Contacto
   contacto: triggers.soporte.contacto,
   whatsapp: triggers.soporte.contacto,
-  instagram: triggers.soporte.contacto,
 
   // Onboarding
-  onboarding: triggers.onboarding.onboarding,
   empezar: triggers.onboarding.empezar,
   ayuda: triggers.onboarding.empezar,
-  proceso: triggers.onboarding.onboarding,
+  onboarding: triggers.onboarding.onboarding,
 
   // Comunidad
-  comunidad: triggers.comunidad.comunidad,
-
-  // Humano
-  humano: 'MaxiQueen OS: He escalado tu consulta a un humano.',
-  asistencia: 'MaxiQueen OS: He escalado tu consulta a un humano.'
+  comunidad: triggers.comunidad.comunidad
 };
 
 const phrases = [
@@ -521,12 +513,17 @@ const phrases = [
   'MaxiQueen OS: La identidad no se improvisa.',
 
   // Cierre filosófico
-  'MaxiQueen OS: Menos ruido. Más criterio.',
+  'MaxiQueen OS: bienvenido al backend mental de MaxiQueen OS 👑.',
   'MaxiQueen OS: El sistema está vivo.',
   'MaxiQueen OS: Pensar también es avanzar.',
   'MaxiQueen OS: No corremos. Operamos.',
   'MaxiQueen OS: Aquí se construye con conciencia.'
 ];
+
+let userState = {
+  stage: 'explorando', // explorando | ventas | onboarding | soporte
+  interestScore: 0
+};
 
 function sendMessage() {
   if (input.value.trim() === '') return;
@@ -542,14 +539,33 @@ function sendMessage() {
 
 for (const keyword in keywordMap) {
   if (text.includes(keyword)) {
+
+    // Actualizar estado
+    if (['precio','planes','costo','cuanto'].includes(keyword)) {
+      userState.stage = 'ventas';
+      userState.interestScore += 2;
+    }
+
+    if (['empezar','onboarding','ayuda'].includes(keyword)) {
+      userState.stage = 'onboarding';
+      userState.interestScore += 1;
+    }
+
+    if (['contacto','whatsapp'].includes(keyword)) {
+      userState.stage = 'soporte';
+      userState.interestScore += 3;
+    }
+
     response = keywordMap[keyword];
     break;
   }
 }
 
   const botMsg = document.createElement('div');
-  botMsg.textContent = response;
+  botMsg.innerHTML = response.replace(/\n/g, '<br>');
+
   chatLog.appendChild(botMsg);
+  console.log('Estado:', userState);
   chatLog.scrollTop = chatLog.scrollHeight;
 }
 
