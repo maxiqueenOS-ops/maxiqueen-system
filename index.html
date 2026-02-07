@@ -752,301 +752,699 @@ if(acceptMQ){
   });
 }
 
-/* =======================
-   CHAT BOT
-======================= */
 const chatLog = document.getElementById('chatLog');
 const input = document.getElementById('userInput');
 
+/* =========================
+   🧠 ESTADO GLOBAL
+========================= */
+let state = {
+  flujo: null,      
+  etapa: null,      
+  nivelDetectado: null,
+  tema: null,
+  ultimaPregunta: null
+};
+
+/* =========================
+   📦 RESPUESTAS BASE
+========================= */
 const triggers = {
+  sistema: {
+    quienSoy: `
+👑 ¿Quién soy?
+
+Soy MaxiQueen OS.
+No soy un bot tradicional.
+No soy un asistente automático frío.
+
+Soy un sistema conversacional diseñado para:
+✔ Ordenar ideas
+✔ Aclarar decisiones
+✔ Construir estructura
+✔ Acompañar procesos reales
+
+No reemplazo humanos.
+No doy respuestas vacías.
+No improviso.
+
+Funciono como:
+🧠 Guía
+🧭 Sistema de pensamiento
+🤝 Puente entre intención y estructura
+
+Si quieres, dime:
+👉 ¿Estás aquí más por claridad, por proyecto o por acompañamiento humano? 👀
+`,
+    queEs: `
+👑 ¿Qué es MaxiQueen OS?
+
+MaxiQueen OS es un sistema digital integral de:
+✔ Contenido
+✔ Estructura
+✔ Conversación
+✔ Automatización
+✔ Acompañamiento humano
+
+No es una herramienta.
+No es solo una web.
+No es solo un bot.
+
+Es un sistema que:
+✔ Piensa contigo
+✔ Te ordena por dentro
+✔ Te da dirección
+✔ Te ayuda a convertir intención en acción
+
+Si quieres, dime:
+👉 ¿Lo estás viendo más como ayuda personal, proyecto de negocio o crecimiento? 👀
+`,
+    comoFunciona: `
+👑 ¿Cómo funciona MaxiQueen OS?
+
+Funciona en capas:
+
+1️⃣ Conversación → te escucho
+2️⃣ Diagnóstico → entiendo tu situación
+3️⃣ Estructura → ordenamos ideas, proyecto o proceso
+4️⃣ Sistema → construimos algo estable
+5️⃣ Acompañamiento → no te dejo solo
+
+No es:
+❌ Automatización sin criterio
+❌ Contenido vacío
+❌ Respuestas rápidas sin profundidad
+
+Es:
+✔ Proceso
+✔ Sistema
+✔ Pensamiento estructurado
+
+Si quieres, dime:
+👉 ¿Te gustaría entenderlo más desde lo personal o desde lo técnico? 👀
+`,
+    diagnostico: `
+👑 ¿Qué es el diagnóstico en MaxiQueen OS?
+
+No es un test.
+No es un formulario.
+No es una etiqueta.
+
+Es una lectura real de:
+✔ Tu nivel actual
+✔ Tu estado mental
+✔ Tu etapa de proyecto
+✔ Tu tipo de bloqueo
+✔ Tu tipo de crecimiento
+
+Sirve para:
+✔ No venderte lo que no necesitas
+✔ No forzarte procesos incorrectos
+✔ No hacerte perder tiempo
+✔ Construir desde donde estás, no desde donde “deberías estar”
+
+Si quieres, dime:
+👉 ¿Quieres que te haga un diagnóstico ahora mismo? 👀
+`,
+    claridad: `
+👑 ¿Qué significa “claridad” aquí?
+
+No es motivación.
+No es “pensar positivo”.
+No es solo tener ideas.
+
+Claridad es:
+✔ Saber qué hacer primero
+✔ Saber qué no hacer
+✔ Saber por qué haces algo
+✔ Tener dirección sin ansiedad
+✔ Sentirte estable aunque el camino no esté completo
+
+En MaxiQueen OS, claridad = estructura mental funcional.
+
+Si quieres, dime:
+👉 ¿Sientes más ruido mental, bloqueo o exceso de ideas ahora mismo? 👀
+`,
+    servicio: `
+👑 ¿Cómo es el servicio en MaxiQueen OS?
+
+No es atención automática.
+No es soporte técnico frío.
+No es solo responder mensajes.
+
+Es:
+✔ Acompañamiento humano real
+✔ Conversación con criterio
+✔ Guía estratégica
+✔ Seguimiento de procesos
+✔ Apoyo cuando hay bloqueo
+
+No tratamos problemas.
+Tratamos procesos.
+
+Si quieres, dime:
+👉 ¿Buscas más guía, acompañamiento o estructura ahora mismo? 👀
+`,
+    asesoria: `
+👑 ¿Cómo es la asesoría?
+
+No es consultoría tradicional.
+No es coaching motivacional vacío.
+No es mentoría genérica.
+
+Es:
+✔ Diagnóstico real
+✔ Claridad estratégica
+✔ Diseño de sistema
+✔ Acompañamiento práctico
+✔ Pensamiento estructurado
+
+No te decimos qué hacer.
+Construimos contigo qué tiene sentido hacer.
+
+Si quieres, dime:
+👉 ¿Estás más en ideas, bloqueo o crecimiento ahora mismo? 👀
+`,
+    soporte: `
+👑 ¿Cómo es el soporte?
+
+No es tickets.
+No es respuestas automáticas.
+No es “revise la FAQ”.
+
+Es:
+✔ Contacto humano directo
+✔ Conversación real
+✔ Resolución con criterio
+✔ Acompañamiento cuando te atoras
+
+Soporte aquí no es técnico.
+Es estructural y humano.
+
+Si quieres, dime:
+👉 ¿Prefieres WhatsApp o Instagram para hablar ahora? 👀
+`,
+    comunidad: `
+👑 ¿Qué es la Comunidad MaxiQueen?
+
+No es un grupo de ruido.
+No es motivación vacía.
+No es consumo de contenido.
+
+Es un espacio para:
+✔ Pensar
+✔ Ordenar
+✔ Construir
+✔ Tomar decisiones
+✔ Avanzar con estructura
+
+Aquí no vienes a mirar.
+Vienes a trabajar en ti y en tu proceso.
+
+Si quieres, dime:
+👉 ¿Te interesa más comunidad o acompañamiento 1:1? 👀
+`,
+    sesiones: `
+👑 ¿Qué son las sesiones reales?
+
+Son encuentros humanos, no automáticos.
+
+Sirven para:
+✔ Desbloquear
+✔ Tomar decisiones
+✔ Reordenar procesos
+✔ Aclarar dirección
+✔ Corregir rumbo
+
+No son charlas motivacionales.
+Son sesiones estratégicas.
+
+Si quieres, dime:
+👉 ¿Te serviría más una sesión de claridad o de estructura ahora mismo? 👀
+`,
+    equipo: `
+👑 ¿Cuántas personas hay en MaxiQueen OS?
+
+MaxiQueen OS no es una empresa tradicional.
+Es un sistema en expansión.
+
+Tiene:
+✔ Núcleo humano estratégico
+✔ Acompañamiento directo
+✔ Infraestructura digital
+✔ Comunidad en crecimiento
+
+No medimos valor en cantidad de personas.
+Medimos valor en calidad de proceso.
+
+Si quieres, dime:
+👉 ¿Te interesa más quiénes somos o cómo podemos ayudarte? 👀
+`
+  },
+
+  emociones: {
+    pereza: `
+Gracias por decirlo directo 👑  
+
+La pereza muchas veces no es flojera.
+Es:
+✔ Cansancio mental
+✔ Saturación
+✔ Falta de dirección
+✔ Exceso sin estructura
+
+No se soluciona empujando.
+Se soluciona ordenando.
+
+Si quieres, dime:
+👉 ¿Te sientes más cansado, saturado o confundido ahora mismo? 👀
+`,
+    cansancio: `
+Tiene todo el sentido 👑  
+
+El cansancio no siempre es físico.
+Muchas veces es mental:
+✔ Demasiadas decisiones
+✔ Demasiadas ideas
+✔ Poco orden
+✔ Mucha presión interna
+
+No necesitas más motivación.
+Necesitas estructura liviana.
+
+Si quieres, dime:
+👉 ¿Te sientes más bloqueado, saturado o sin dirección ahora mismo? 👀
+`,
+    frustracion: `
+Gracias por decirlo 👑  
+
+La frustración casi nunca es falta de capacidad.
+Es falta de estructura en medio de intención.
+
+No se arregla empujando más.
+Se arregla ordenando mejor.
+
+Si quieres, dime:
+👉 ¿Te frustra más no avanzar o no saber qué avanzar? 👀
+`
+  },
+
   ventas: {
     planes: `
-Trabajamos con planes claros y sin letra pequeña.
+👑 PLANES MAXIQUEEN OS — claros, humanos y sin letra pequeña
 
-👑 Starter – $49/mes
-Orden inicial, diagnóstico y estructura base.
-Ideal si hoy hay ideas pero no sistema.
+No vendemos herramientas.
+No vendemos plataformas.
+No vendemos humo.
 
-👑 Pro – $99/mes
-Sistema activo para crecer, vender
-y automatizar procesos clave.
+Construimos sistemas que piensan contigo,
+te ordenan por dentro,
+y convierten intención en estructura real.
 
-👑 Elite – $199/mes
-Acompañamiento prioritario,
-infraestructura completa
-y control total del sistema.
-`,
-    costos: `
-Los costos reflejan acompañamiento real.
-No pagas por una herramienta,
-pagas por estructura, criterio y ejecución.
+━━━━━━━━━━━━━━━━━━━━━━
+
+🌱 👑 STARTER — $49/mes
+Ideal si hoy tienes ideas, pero no sistema.
+
+✔ Orden mental y estratégico
+✔ Diagnóstico real
+✔ Base operativa clara
+✔ Ruta de acción sin ruido
+✔ Acompañamiento inicial humano
+
+Perfecto para:
+Personas bloqueadas,
+emprendedores en inicio,
+creadores con ideas dispersas.
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 👑 PRO — $99/mes
+Para crecer, vender y automatizar con estructura.
+
+✔ Todo lo de Starter
+✔ Sistema activo de ventas
+✔ Automatizaciones clave
+✔ Optimización de procesos
+✔ Acompañamiento continuo
+
+Perfecto para:
+Negocios en marcha,
+creadores que ya venden sin sistema,
+personas listas para estructurar crecimiento.
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+🏰 👑 ELITE — $199/mes
+Infraestructura completa + acompañamiento prioritario.
+
+✔ Todo lo de Pro
+✔ Arquitectura completa del sistema
+✔ Automatización avanzada
+✔ Control total del ecosistema
+✔ Acceso directo a soporte humano
+
+Perfecto para:
+Marcas, creadores y proyectos
+que quieren crecer con estabilidad real.
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+Si quieres, dime:
+👉 ¿Estás más en ideas, negocio activo o crecimiento serio ahora mismo? 👀👑
 `,
     valor: `
-MaxiQueen OS no compite por precio.
-Compite por claridad, orden
-y resultados sostenibles.
-`,
-    diferencia: `
-No vendemos páginas ni plantillas.
-Vendemos un sistema que piensa contigo
-y evoluciona con tu proyecto.
-`,
-    decision: `
-Elegir un plan no es gastar,
-es dejar de perder tiempo,
-energía y dinero por desorden.
-`,
-    objecion_precio: `
-Si el precio genera duda,
-normalmente el problema no es el costo,
-sino el caos que ya estás pagando.
-`,
-    escalera: `
-Todos los planes están conectados.
-Muchos empiezan en Starter,
-escalan a Pro
-y consolidan en Elite.
-`,
-    whatsapp: `
-El contacto principal es vía WhatsApp.
-Si el sistema detecta que necesitas un humano,
-la conversación se escala automáticamente.
+👑 ¿POR QUÉ MAXIQUEEN OS?
+
+No vendemos bots.
+No vendemos funnels.
+No vendemos automatización por automatizar.
+
+Vendemos:
+✔ Claridad
+✔ Orden
+✔ Dirección
+✔ Decisión
+✔ Sistema
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+Esto es lo que normalmente cambia en las personas:
+
+✔ Menos ruido mental
+✔ Menos decisiones improvisadas
+✔ Más foco
+✔ Más estructura
+✔ Más avance real
+✔ Menos ansiedad por “no saber qué hacer”
+
+━━━━━━━━━━━━━━━━━━━━━━
+
+El valor no es tener una web.
+No es tener un bot.
+No es tener automatización.
+
+El valor es:
+Saber exactamente qué hacer con tu proyecto
+cuando nadie más te lo puede ordenar.
+
+Si quieres, dime:
+👉 ¿Hoy te falta más claridad, estructura o acompañamiento? 👑
 `
   },
 
   onboarding: {
-    onboarding: `
-El onboarding es el inicio real del sistema.
-Aquí se baja el ruido, se aclaran prioridades
-y se convierte la confusión en estructura.
-`,
-    empezar: `
-Para empezar solo necesitas decisión.
-El sistema se adapta a tu nivel,
-no al revés.
+    inicio: `
+Hola 👑  
+Estoy aquí contigo, con calma.
+
+No soy un bot de respuestas rápidas.
+Soy parte del sistema MaxiQueen OS.
+
+¿En qué punto estás ahora mismo?
+
+1️⃣ Ideas  
+2️⃣ Bloqueo  
+3️⃣ Crecimiento  
+👉 o pereza / cansancio
 `
   },
 
-  identidad: {
-    queEs: `
-MaxiQueen OS es un sistema operativo digital humano.
-No es una app, no es una web y no es una asesoría aislada.
+  guia: {
+    flujo1: `
+👑 FLUJO 1 — ORDENAR IDEAS
 
-Es una estructura viva que ordena ideas,
-construye sistemas y acompaña decisiones reales.
-`,
-    filosofia: `
-Orden antes de automatizar.
-Sistema antes que herramientas.
-Conciencia antes que velocidad.
+Este flujo es para ti si:
+✔ Tienes ideas, pero no sistema
+✔ Sientes ruido mental
+✔ No sabes por dónde empezar
+✔ Te cuesta tomar decisiones
 
-Aquí no se corre sin mapa.
+Aquí trabajamos:
+✔ Claridad personal
+✔ Dirección estratégica
+✔ Enfoque real
+✔ Prioridades concretas
+
+El objetivo no es hacer más.
+Es hacer mejor.
+
+Dime:
+👉 ¿Hoy sientes más confusión, bloqueo o exceso de ideas? 👀
 `,
-    diferencia: `
-No trabajamos con soluciones sueltas.
-Construimos sistemas que piensan contigo.
+    flujo2: `
+👑 FLUJO 2 — CREAR ALGO VENDIBLE
+
+Este flujo es para ti si:
+✔ Ya tienes una idea clara
+✔ Quieres convertirla en oferta
+✔ Quieres vender sin improvisar
+✔ Quieres estructura comercial real
+
+Aquí trabajamos:
+✔ Propuesta de valor
+✔ Oferta clara
+✔ Mensaje correcto
+✔ Sistema de conversión
+
+El objetivo no es vender rápido.
+Es vender bien.
+
+Dime:
+👉 ¿Hoy tienes una idea clara o algo ya en marcha? 👀
+`,
+    flujo3: `
+📲 CONTACTO HUMANO — SIN BOTS
+
+Aquí no te responde un sistema.
+Te responde una persona real.
+
+Canales disponibles:
+✔ WhatsApp — atención directa
+✔ Instagram — contacto rápido
+✔ Comunidad — acompañamiento continuo
+
+Dime:
+👉 ¿Prefieres WhatsApp o Instagram ahora mismo? 👀
 `
   },
 
-  modulos: {
-    contenido: `
-El módulo de contenido transforma ideas en mensajes claros.
-No es publicar por publicar, es comunicar con intención.
-`,
-    web: `
-El módulo web convierte estructura en presencia digital.
-Landings, sistemas, flujos y orden técnico real.
-`,
-    automatizacion: `
-La automatización no reemplaza criterio.
-Aquí se usa para liberar tiempo y reducir errores.
-`,
-    comercial: `
-El módulo comercial ordena ofertas, precios y decisiones.
-Vender deja de ser confuso.
-`
-  },
+  comunidad: {
+    comunidad: `
+👥 COMUNIDAD MAXIQUEEN
 
-  servicios: {
-    asesorias: `
-Las asesorías no son charlas.
-Son espacios de decisión y dirección estratégica.
-`,
-    sistemas: `
-No entregamos archivos.
-Entregamos sistemas funcionales.
-`,
-    acompanamiento: `
-El acompañamiento existe para sostener procesos,
-no para crear dependencia.
-`
-  },
+Este no es un grupo de ruido.
+No es motivación vacía.
+No es consumo de contenido.
 
-  creativo: {
-    dibujos: `
-Los dibujos y visuales sirven para pensar.
-A veces una imagen ordena más que mil palabras.
-`,
-    proyectos: `
-Cada proyecto se trata como un sistema único.
-No usamos plantillas mentales.
-`,
-    narrativa: `
-Toda marca necesita una historia clara,
-no un logo bonito solamente.
+Es:
+✔ Acompañamiento humano
+✔ Sesiones reales
+✔ Seguimiento estratégico
+✔ Criterio compartido
+
+No entras para mirar.
+Entras para ordenar,
+decidir
+y avanzar.
+
+Dime:
+👉 ¿Prefieres empezar en comunidad o 1:1? 👀
 `
   },
 
   soporte: {
-  contacto: `
-Puedes contactarnos por los canales oficiales de MaxiQueen OS:
+    contacto: `
+📲 SOPORTE HUMANO
 
-📲 WhatsApp – atención directa y acompañamiento
-📸 Instagram – contenido, avisos y contacto rápido
-📘 Facebook – comunidad y actualizaciones
-📺 YouTube – guías, sistemas y explicación en profundidad
+Puedes hablar directamente con alguien real por:
 
-Usa el canal que te resulte más cómodo.
-Siempre respondemos con criterio, no con bots.
+✔ WhatsApp:
+https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Vengo%20desde%20la%20landing%20y%20quiero%20activar%20el%20sistema.
+
+✔ Instagram
+✔ Comunidad interna
+
+Dime:
+👉 ¿Qué canal prefieres ahora mismo? 👀
 `
-},
+  },
 
-venta: {
-  enfoque: `
-No empujamos ventas.
-Ayudamos a tomar decisiones correctas.
-`,
-  precio: `
-El precio refleja tiempo humano,
-criterio y estructura real.
-`,
-  elegir: `
-Elegir un plan no es gastar,
-es ordenar.
-`
-},
+  diagnostico: {
+    starter: `
+👑 Por lo que me cuentas, estás en etapa de **orden y claridad**.
 
-operacion: {
-  humano: `
-El sistema siempre tiene respaldo humano.
-La tecnología asiste, no reemplaza.
-`,
-  asistente: `
-MaxiQueen Bot guía, ordena y acompaña.
-Cuando hace falta, escala a humano.
-`,
-  criterio: `
-Las decisiones importantes no se automatizan.
-`
-},
+No necesitas más herramientas.
+Necesitas estructura básica bien hecha.
 
-guia: {
-  queHago: `
-Lo primero es ordenar.
-Luego construir.
-Después escalar.
-`,
-  comoEmpiezo: `
-Empiezas cuando decides dejar el caos.
-`,
-  necesitoExperiencia: `
-No necesitas experiencia técnica,
-necesitas criterio y decisión.
-`
-},
+Por eso, el punto ideal para ti ahora es:
 
-publico: {
-  emprendedores: `
-Para quienes quieren construir algo serio.
-`,
-  creadores: `
-Para quienes quieren convertir contenido en sistema.
-`,
-  personas: `
-Para quien necesita orden y dirección.
-`
-},
+🌱 **STARTER**
 
-resultados: {
-  logros: `
-El logro no es tener una web.
-Es tener claridad y dirección.
+Te saca del ruido,
+te da base,
+y te deja listo para crecer sin caos.
+
+Si quieres, dime:
+👉 ¿Quieres que te explique cómo empezamos paso a paso? 👀
 `,
-  avances: `
-Cada avance reduce ruido
-y aumenta foco.
+    pro: `
+👑 Por lo que me cuentas, ya estás en **movimiento real**.
+
+No necesitas más ideas.
+Necesitas sistema, procesos y estructura de venta.
+
+Por eso, el punto ideal para ti ahora es:
+
+🚀 **PRO**
+
+Convierte tu esfuerzo en sistema,
+y tu sistema en crecimiento estable.
+
+Si quieres, dime:
+👉 ¿Quieres que te muestre cómo sería tu estructura inicial? 👀
 `,
-  impacto: `
-El impacto se mide en decisiones bien tomadas.
-`
-},
+    elite: `
+👑 Por lo que me cuentas, estás en **etapa de expansión seria**.
 
- proceso: {
-  proceso: `
-Todo empieza con diagnóstico.
-Sin entender el punto real, no se avanza.
-`,
-  desarrollo: `
-Se construye por capas, no por impulso.
-`,
-  evolucion: `
-El sistema se ajusta con el tiempo.
-No se abandona a mitad del camino.
-`
-},
+No necesitas hacks.
+Necesitas arquitectura sólida.
 
- comunidad: {
-  comunidad: `
-La Comunidad MaxiQueen es un espacio seguro para pensar,
-construir y sostener procesos reales.
+Por eso, el punto ideal para ti ahora es:
 
-Aquí no hay ruido ni promesas vacías.
-Hay acompañamiento humano, sesiones en vivo,
-seguimiento estratégico y criterio.
+🏰 **ELITE**
 
-No entras para consumir contenido.
-Entras para ordenar ideas, tomar decisiones
-y avanzar con estructura.
+Sistema completo,
+control total,
+acompañamiento prioritario.
 
-La comunidad existe para que no camines solo
-mientras construyes tu sistema, tu negocio
-o tu siguiente nivel.
+Si quieres, dime:
+👉 ¿Quieres que veamos cómo se diseña tu ecosistema completo? 👀
 `
   }
 };
 
+/* =========================
+   🎯 INTENTS BASE
+========================= */
 const intents = [
+  // Sistema / Identidad
   {
-    keywords: ["precio","costos","cuánto vale","cuanto cuesta","planes","pago"],
+    keywords: ["quien eres","quién eres","que eres","qué eres"],
+    response: () => triggers.sistema.quienSoy
+  },
+  {
+    keywords: ["que es","qué es","qué es esto","que es esto","que es maxiqueen","qué es maxiqueen"],
+    response: () => triggers.sistema.queEs
+  },
+  {
+    keywords: ["como funciona","cómo funciona","funciona","como es el sistema"],
+    response: () => triggers.sistema.comoFunciona
+  },
+  {
+    keywords: ["diagnostico","diagnóstico"],
+    response: () => triggers.sistema.diagnostico
+  },
+  {
+    keywords: ["claridad","qué es claridad","que es claridad"],
+    response: () => triggers.sistema.claridad
+  },
+  {
+    keywords: ["servicio","cómo es el servicio","como es el servicio"],
+    response: () => triggers.sistema.servicio
+  },
+  {
+    keywords: ["asesoria","asesoría","cómo es la asesoria","como es la asesoria"],
+    response: () => triggers.sistema.asesoria
+  },
+  {
+    keywords: ["soporte","cómo es el soporte","como es el soporte"],
+    response: () => triggers.sistema.soporte
+  },
+  {
+    keywords: ["comunidad interna","que es la comunidad","qué es la comunidad"],
+    response: () => triggers.sistema.comunidad
+  },
+  {
+    keywords: ["sesiones","sesiones reales"],
+    response: () => triggers.sistema.sesiones
+  },
+  {
+    keywords: ["cuantas personas","cuántas personas","equipo","cuantos son"],
+    response: () => triggers.sistema.equipo
+  },
+
+  // Emociones
+  {
+    keywords: ["pereza","flojo","desganado"],
+    response: () => triggers.emociones.pereza
+  },
+  {
+    keywords: ["cansado","agotado","fatigado"],
+    response: () => triggers.emociones.cansancio
+  },
+  {
+    keywords: ["frustrado","frustración","estresado","estres"],
+    response: () => triggers.emociones.frustracion
+  },
+
+  // Ventas
+  {
+    keywords: ["precio","planes","pago"],
     response: () => triggers.ventas.planes
   },
   {
+    keywords: ["costos","cuánto vale","cuanto cuesta","precio real"],
+    response: () => triggers.ventas.planes
+  },
+  {
+    keywords: ["valor","vale la pena","beneficio","beneficios","por qué","porque"],
+    response: () => triggers.ventas.valor
+  },
+
+  // Inicio
+  {
     keywords: ["empezar","inicio","onboarding","arrancar","comenzar"],
-    response: () => triggers.onboarding.onboarding
-  },
-  {
-    keywords: ["ayuda","soporte","contacto","problema","hablar con alguien"],
-    response: () => triggers.soporte.contacto
-  },
-  {
-    keywords: ["comunidad","grupo","acompañamiento","personas"],
-    response: () => triggers.comunidad.comunidad
+    response: () => triggers.onboarding.inicio
   },
   {
     keywords: ["hola","buenas","hey","saludos"],
-    response: () => `
-Hola 👑  
-Estoy aquí para ayudarte con calma.  
-¿En qué punto estás ahora mismo?
-`
+    response: () => triggers.onboarding.inicio
+  },
+
+  // Flujos
+  {
+    keywords: ["1","ordenar","ordenar ideas","ideas"],
+    response: () => {
+      state.flujo = "flujo1";
+      state.etapa = "diagnostico";
+      return triggers.guia.flujo1;
+    }
   },
   {
-    keywords: ["no sé","confundido","perdido","no entiendo"],
-    response: () => `
-Está bien no tener claridad aún.  
-Este sistema existe justo para eso: ordenar, crear y vender.
+    keywords: ["2","crear","vendible","producto","oferta"],
+    response: () => {
+      state.flujo = "flujo2";
+      state.etapa = "diagnostico";
+      return triggers.guia.flujo2;
+    }
+  },
+  {
+    keywords: ["3","humano","persona","asesor","hablar","hablar con alguien"],
+    response: () => {
+      state.flujo = "flujo3";
+      state.etapa = "contacto";
+      return triggers.guia.flujo3;
+    }
+  },
 
-¿Quieres:
+  // Confirmaciones
+  {
+    keywords: ["si","sí","ok","dale","vamos","perfecto","listo","de una"],
+    response: () => `
+Perfecto 👑  
+Entonces dime:
+
 1️⃣ Ordenar ideas  
 2️⃣ Crear algo vendible  
 3️⃣ Hablar con alguien humano  
@@ -1054,21 +1452,229 @@ Este sistema existe justo para eso: ordenar, crear y vender.
   }
 ];
 
+/* =========================
+   🧠 MOTOR DE CONTEXTO
+========================= */
+function contextualResponse(text) {
+
+  // FLUJO 1 — ORDENAR IDEAS
+  if (state.flujo === "flujo1" && state.etapa === "diagnostico") {
+    if (text.includes("confusion") || text.includes("confusión")) {
+      state.nivelDetectado = "starter";
+      state.etapa = "recomendacion";
+      return `
+Gracias por decirlo directo 👑  
+
+La confusión no es falta de capacidad.
+Es exceso de ruido sin estructura.
+
+Eso significa que ahora mismo necesitas:
+✔ Claridad
+✔ Prioridades
+✔ Dirección concreta
+
+No más ideas.
+No más teoría.
+
+Sistema.
+
+${triggers.diagnostico.starter}
+`;
+    }
+    if (text.includes("bloqueo")) {
+      state.nivelDetectado = "starter";
+      state.etapa = "recomendacion";
+      return `
+Gracias por decirlo 👑  
+
+El bloqueo casi nunca es pereza.
+Es saturación sin estructura.
+
+Eso significa que ahora necesitas:
+✔ Orden mental
+✔ Enfoque claro
+✔ Dirección accionable
+
+No presión.
+No más información.
+
+Sistema.
+
+${triggers.diagnostico.starter}
+`;
+    }
+    if (text.includes("exceso")) {
+      state.nivelDetectado = "starter";
+      state.etapa = "recomendacion";
+      return `
+Tiene todo el sentido 👑  
+
+El exceso de ideas no es problema creativo.
+Es problema de jerarquía.
+
+Eso significa que ahora necesitas:
+✔ Prioridades claras
+✔ Dirección estratégica
+✔ Enfoque real
+
+No más ideas.
+No más estímulos.
+
+Sistema.
+
+${triggers.diagnostico.starter}
+`;
+    }
+  }
+
+  // FLUJO 2 — CREAR ALGO VENDIBLE
+  if (state.flujo === "flujo2" && state.etapa === "diagnostico") {
+    if (text.includes("ya") || text.includes("tengo") || text.includes("en marcha")) {
+      state.nivelDetectado = "pro";
+      state.etapa = "recomendacion";
+      return `
+Buenísimo 👑  
+
+Si ya tienes algo en marcha,
+tu cuello de botella no es creatividad.
+
+Es:
+✔ Sistema
+✔ Mensaje
+✔ Conversión
+✔ Estructura
+
+Eso significa que ahora necesitas orden comercial,
+no más ideas.
+
+${triggers.diagnostico.pro}
+`;
+    }
+    if (text.includes("no") || text.includes("todavía") || text.includes("aún")) {
+      state.nivelDetectado = "starter";
+      state.etapa = "recomendacion";
+      return `
+Perfecto 👑  
+
+Si aún no tienes nada concreto,
+lo inteligente no es vender rápido.
+
+Es:
+✔ Ordenar primero
+✔ Definir bien
+✔ Construir con criterio
+
+Eso te ahorra tiempo, frustración y desgaste.
+
+${triggers.diagnostico.starter}
+`;
+    }
+  }
+
+  // DESPUÉS DE RECOMENDACIÓN — MANTENER CONTEXTO
+  if (state.etapa === "recomendacion") {
+    if (text.includes("como") || text.includes("cómo") || text.includes("funciona") || text.includes("empezamos")) {
+      return `
+Buenísima pregunta 👑  
+
+Lo importante ahora no es el plan,
+es cómo empezamos contigo realmente.
+
+El proceso suele ser:
+
+1️⃣ Diagnóstico humano profundo  
+2️⃣ Orden mental y estratégico  
+3️⃣ Diseño de estructura mínima viable  
+4️⃣ Acompañamiento paso a paso  
+5️⃣ Evolución según tu ritmo  
+
+No te tiramos info encima.
+Construimos contigo.
+
+Si quieres, dime:
+👉 ¿Prefieres avanzar paso a paso o ver primero el panorama completo? 👀
+`;
+    }
+    if (text.includes("si") || text.includes("sí") || text.includes("dale") || text.includes("ok")) {
+      return `
+Perfecto 👑  
+
+Entonces empezamos así:
+
+Primero te hago unas preguntas cortas
+para entender bien tu punto actual,
+y desde ahí construimos contigo.
+
+Dime:
+👉 ¿Hoy estás más enfocado en ti como persona o en tu proyecto como negocio? 👀
+`;
+    }
+  }
+
+  // FLUJO 3 — CONTACTO HUMANO
+  if (state.flujo === "flujo3") {
+    if (text.includes("whatsapp")) {
+      return `
+Perfecto 👑  
+
+Aquí tienes acceso directo a una persona real:
+
+📲 WhatsApp:
+👉 https://wa.me/573016625921  
+
+(Escríbenos y seguimos contigo sin bots.)
+
+¿Quieres que mientras tanto sigamos conversando aquí? 👀
+`;
+    }
+    if (text.includes("instagram")) {
+      return `
+Perfecto 👑  
+
+Aquí puedes escribirnos directo:
+
+📲 Instagram:
+👉 https://instagram.com/maxiqueenos  
+
+¿Quieres que mientras tanto sigamos conversando aquí? 👀
+`;
+    }
+  }
+
+  return null;
+}
+
+/* =========================
+   🎯 RESPUESTA PRINCIPAL
+========================= */
 function getResponse(message){
   const text = message.toLowerCase();
+
+  // 1️⃣ CONTEXTO PRIMERO
+  const contextual = contextualResponse(text);
+  if (contextual) return contextual;
+
+  // 2️⃣ INTENTS NORMALES
   for(const intent of intents){
     if(intent.keywords.some(k => text.includes(k))){
       return intent.response();
     }
   }
+
+  // 3️⃣ FALLBACK INTELIGENTE (NO GENÉRICO)
   return `
 Te leo 👀  
-No quiero responderte con algo genérico.
 
-¿Puedes contarme un poco más qué necesitas ahora mismo?
+No quiero responderte como bot.
+Quiero entenderte bien.
+
+¿Me cuentas un poco mejor qué tienes en mente ahora mismo? 👑
 `;
 }
 
+/* =========================
+   🧩 UI
+========================= */
 function appendMessage(text, sender="bot"){
   const msg = document.createElement('div');
   msg.textContent = text;
@@ -1087,236 +1693,13 @@ function sendMessage(){
   input.value = "";
   setTimeout(() => {
     appendMessage(getResponse(message), "bot");
-  }, 350);
+  }, 200);
 }
+
 input.addEventListener("keydown", e => {
   if(e.key === "Enter") sendMessage();
 });
 </script>
-<script>
-/* =============================
-   MAXIQUEEN OS CHAT ENGINE 👑
-   Unified Stable Version
-============================= */
-
-// ELEMENTS
-const input = document.getElementById("chatInput");
-const chatLog = document.getElementById("chatLog");
-
-// ================= RESPONSES CORE =================
-
-const triggers = {
-  ventas: {
-    planes: `🔥 Planes MaxiQueen OS
-
-1️⃣ Starter — Organización + estructura base  
-2️⃣ Pro — Automatización + sistemas activos  
-3️⃣ Enterprise — Infraestructura completa + CRM + IA  
-
-¿Quieres que te recomiende el mejor para ti?`,
-    costos: `💰 Los precios dependen del nivel de automatización, acompañamiento y alcance.
-
-¿Tu objetivo es:
-1️⃣ Ordenar tu proyecto
-2️⃣ Automatizar ventas
-3️⃣ Escalar con infraestructura real?`
-  },
-  soporte: {
-    contacto: `📲 Puedes escribir directo a WhatsApp:
-👉 https://wa.me/573016625921
-
-¿Quieres que te abra el canal ahora?`
-  },
-  onboarding: {
-    empezar: `🚀 Perfecto. Empezamos por ordenar tu proyecto.
-
-Dime:
-1️⃣ ¿Es marca personal, negocio o idea?
-2️⃣ ¿Ya vendes algo?
-3️⃣ ¿Dónde estás más bloqueado ahora?`,
-    onboarding: `🧩 El onboarding de MaxiQueen OS organiza, estabiliza y prepara tu sistema para escalar.
-
-¿Quieres que empecemos ahora mismo?`
-  },
-  comunidad: {
-    comunidad: `👑 MaxiQueen OS funciona en red.
-
-Incluye:
-• Comunidad privada
-• Acompañamiento humano
-• Sistemas compartidos
-• Infraestructura viva
-
-¿Quieres entrar?`
-  }
-};
-
-// ================= KEYWORDS =================
-
-const keywordMap = {
-  precio: triggers.ventas.planes,
-  planes: triggers.ventas.planes,
-  costo: triggers.ventas.costos,
-  cuanto: triggers.ventas.costos,
-
-  contacto: triggers.soporte.contacto,
-  whatsapp: triggers.soporte.contacto,
-
-  empezar: triggers.onboarding.empezar,
-  ayuda: triggers.onboarding.empezar,
-  onboarding: triggers.onboarding.onboarding,
-
-  comunidad: triggers.comunidad.comunidad
-};
-
-// ================= PHILOSOPHY PHRASES =================
-
-const phrases = [
-  'MaxiQueen OS: Esto funciona mejor paso a paso y con tu guía humana o Maxibot.',
-  'MaxiQueen OS: Orden antes de automatizar e integrar.',
-  'MaxiQueen OS: No improvisamos. Operamos, desarrollamos.',
-  'MaxiQueen OS: Primero claridad, luego velocidad y resultado.',
-  'MaxiQueen OS: El sistema piensa contigo, no por ti.',
-
-  'MaxiQueen OS: No somos una plataforma. Somos un sistema operativo.',
-  'MaxiQueen OS: Aquí la tecnología no manda. Sirve y se automatiza.',
-  'MaxiQueen OS: No alojamos archivos. Alojamos decisiones.',
-  'MaxiQueen OS: Tu proyecto necesita estructura, no más herramientas.',
-  'MaxiQueen OS: El caos no se elimina. Se ordena.',
-
-  'MaxiQueen OS: Vamos a organizar esto primero, ¿de acuerdo?',
-  'MaxiQueen OS: Antes de ejecutar, entendemos.',
-  'MaxiQueen OS: Nada se activa sin pasar por el núcleo.',
-  'MaxiQueen OS: El onboarding estabiliza antes de escalar.',
-  'MaxiQueen OS: No necesitas saberlo todo para empezar.',
-
-  'MaxiQueen OS: Aquí no estás solo.',
-  'MaxiQueen OS: El acompañamiento es real.',
-  'MaxiQueen OS: Cuando el sistema no alcanza, escala al humano.',
-  'MaxiQueen OS: Las decisiones importantes no se automatizan.',
-  'MaxiQueen OS: El control siempre vuelve a ti.',
-
-  'MaxiQueen OS: Vender sin sistema es agotamiento.',
-  'MaxiQueen OS: La claridad también convierte.',
-  'MaxiQueen OS: Un negocio sin orden no escala.',
-  'MaxiQueen OS: Primero estructura, luego crecimiento.',
-  'MaxiQueen OS: No prometemos resultados mágicos.',
-
-  'MaxiQueen OS: Tu historia también es infraestructura.',
-  'MaxiQueen OS: La creatividad sin orden se pierde.',
-  'MaxiQueen OS: El contenido también necesita sistema.',
-  'MaxiQueen OS: Crear es más fácil con estructura.',
-  'MaxiQueen OS: La identidad no se improvisa.',
-
-  'MaxiQueen OS: Bienvenido al backend mental de MaxiQueen OS 👑.',
-  'MaxiQueen OS: El sistema está vivo.',
-  'MaxiQueen OS: Pensar también es avanzar.',
-  'MaxiQueen OS: No corremos. Operamos.',
-  'MaxiQueen OS: Aquí se construye con conciencia.'
-];
-
-// ================= USER STATE =================
-
-let userState = {
-  stage: 'explorando', // explorando | ventas | onboarding | soporte
-  interestScore: 0
-};
-
-// ================= UI HELPERS =================
-
-function appendMessage(text, sender = "bot") {
-  const msg = document.createElement("div");
-  msg.textContent = text;
-  msg.style.whiteSpace = "pre-line";
-  msg.className =
-    sender === "user"
-      ? "text-right text-amber-400 font-semibold mb-2"
-      : "text-left text-zinc-200 mb-2";
-  chatLog.appendChild(msg);
-  chatLog.scrollTop = chatLog.scrollHeight;
-}
-
-// ================= CORE RESPONSE ENGINE =================
-
-function getResponse(userText) {
-  const text = userText.toLowerCase();
-
-  for (const keyword in keywordMap) {
-    if (text.includes(keyword)) {
-
-      // Update state
-      if (['precio', 'planes', 'costo', 'cuanto'].includes(keyword)) {
-        userState.stage = 'ventas';
-        userState.interestScore += 2;
-      }
-
-      if (['empezar', 'onboarding', 'ayuda'].includes(keyword)) {
-        userState.stage = 'onboarding';
-        userState.interestScore += 1;
-      }
-
-      if (['contacto', 'whatsapp'].includes(keyword)) {
-        userState.stage = 'soporte';
-        userState.interestScore += 3;
-      }
-
-      console.log("Estado:", userState);
-      return keywordMap[keyword];
-    }
-  }
-
-  // Fallback filosófico
-  return phrases[Math.floor(Math.random() * phrases.length)];
-}
-
-// ================= SEND MESSAGE =================
-
-function sendMessage() {
-  const message = input.value.trim();
-  if (!message) return;
-
-  appendMessage(message, "user");
-  input.value = "";
-
-  setTimeout(() => {
-    appendMessage(getResponse(message), "bot");
-  }, 350);
-}
-
-input.addEventListener("keydown", e => {
-  if (e.key === "Enter") sendMessage();
-});
-
-// ================= THEME SYSTEM (UNIFICADO) =================
-
-(function () {
-  const saved = localStorage.getItem("mq-theme") || "dark";
-  document.documentElement.setAttribute("data-theme", saved);
-  document.body.setAttribute("data-theme", saved);
-})();
-
-function toggleTheme() {
-  const html = document.documentElement;
-  const btn = document.querySelector(".toggle-theme");
-  const current = html.getAttribute("data-theme") || "dark";
-
-  let next, label;
-  if (current === "dark") { next = "light"; label = "🧩 Light"; }
-  else if (current === "light") { next = "gold"; label = "👑 Gold"; }
-  else { next = "dark"; label = "💎 Dark"; }
-
-  html.setAttribute("data-theme", next);
-  document.body.setAttribute("data-theme", next);
-  localStorage.setItem("mq-theme", next);
-  if (btn) btn.textContent = label;
-}
-
-<script src="js/knowledge.js"></script>
-<script src="js/logica.js"></script>
-<script src="js/main.js"></script>
-
-<script src="assets/components/mq-badge.js"></script>
-<mq-badge></mq-badge>
 
 </body>
 </html>
