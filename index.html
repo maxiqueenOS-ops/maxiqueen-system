@@ -1,1609 +1,244 @@
 <!DOCTYPE html>
 <html lang="es" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MaxiQueen OS | Sistema Digital Integral</title>
-<meta name="description" content="JavaScript es el cuerpo, Python es la mente, tú eres la conciencia. MaxiQueen OS es un sistema digital integral diseñado para convertir ideas, historias y negocios en activos digitales rentables.">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MAXIQUEEN OS — Builder OS 👑</title>
 
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <!-- ================= ANIMACIONES CSS ================= -->
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #0b0f1a, #05070f);
+      color: #e5e7eb;
+    }
 
-<!-- Tailwind CDN -->
-<script src="https://cdn.tailwindcss.com"></script>
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 2rem;
+    }
 
-<style>
-/* =====================
-   VARIABLES / TEMAS
-===================== */
-:root {
-  --accent:#facc15;
-  --bg-main:#0b1220;
-  --text-main:#e5e7eb;
-  --card-bg:#0f172a;
-  --border-soft:#1e293b;
-  --btn-bg:#facc15;
-  --btn-text:#000000;
-  --bg-soft:rgba(0,0,0,.45);
-}
+    .center {
+      text-align: center;
+    }
 
-[data-theme="light"] {
-  --accent:#f59e0b;
-  --bg-main:#e9eaec;
-  --text-main:#050505;
-  --card-bg:#ffffff;
-  --border-soft:#d1d5db;
-  --btn-bg:#111111;
-  --btn-text:#ffffff;
-  --bg-soft:rgba(255,255,255,.75);
-}
+    .card {
+      background: rgba(255,255,255,0.04);
+      border-radius: 16px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 40px rgba(0,0,0,0.3);
+    }
 
-html,body{
-  background:var(--bg-main)!important;
-  color:var(--text-main)!important;
-  font-family:'Poppins',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-  overflow-x:hidden;
-  transition:background .35s,color .35s;
-  text-rendering:optimizeLegibility;
-  -webkit-font-smoothing:antialiased;
-}
+    button {
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem 1.25rem;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
 
-/* =====================
-   EFECTOS GENERALES
-===================== */
-.fade-in{opacity:0;transform:translateY(20px);animation:fadeIn .9s ease forwards;}
-@keyframes fadeIn{to{opacity:1;transform:translateY(0);}}
+    button.secondary {
+      background: rgba(255,255,255,0.08);
+    }
 
-.glass{
-  background:var(--bg-soft);
-  backdrop-filter:blur(16px);
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:0 10px 40px rgba(0,0,0,.25);
-}
+    button:hover {
+      opacity: 0.9;
+    }
 
-[data-theme="light"] .glass{
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(0,0,0,.25);
-}
+    input {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 0.6rem 0.8rem;
+      color: white;
+      width: 100%;
+      outline: none;
+    }
 
-/* =====================
-   ANIMACIONES
-===================== */
-@keyframes floatInfinite{
-  0%{transform:translate3d(0,0,0) rotateX(0deg) rotateY(0deg);}
-  25%{transform:translate3d(0,6px,0) rotateX(1deg) rotateY(-1deg);}
-  50%{transform:translate3d(0,-4px,0) rotateX(-1deg) rotateY(1deg);}
-  75%{transform:translate3d(0,6px,0) rotateX(1deg) rotateY(-1deg);}
-  100%{transform:translate3d(0,0,0) rotateX(0deg) rotateY(0deg);}
-}
+    .chat {
+      max-width: 700px;
+      margin: 2rem auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
 
-@keyframes bounce-slow{
-  0%,100%{transform:translateY(0);}
-  50%{transform:translateY(-14px);}
-}
-.animate-bounce-slow{animation:bounce-slow 3.2s ease-in-out infinite;}
+    .messages {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
 
-@keyframes pulse-slow{
-  0%,100%{opacity:.18;}
-  50%{opacity:.35;}
-}
-.animate-pulse-slow{animation:pulse-slow 6s ease-in-out infinite;}
+    .msg {
+      padding: 0.6rem 0.8rem;
+      border-radius: 12px;
+      max-width: 85%;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
 
-@media (prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important;}
-}
+    .msg.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #6366f1, #7c3aed);
+      color: white;
+    }
 
-/* =====================
-   HERO / LOGO
-===================== */
-.hero-avatar{
-  position:relative;
-  animation:floatInfinite 7s ease-in-out infinite;
-}
-.hero-avatar::after{
-  content:'';
-  position:absolute;
-  inset:-14px;
-  border-radius:9999px;
-  background:conic-gradient(from 0deg,#f43f5e,#f59e0b,#facc15,#22c55e,#38bdf8,#a855f7,#f43f5e);
-  filter:blur(20px);
-  opacity:.75;
-  z-index:-1;
-}
+    .msg.bot {
+      align-self: flex-start;
+      background: rgba(255,255,255,0.08);
+      color: #e5e7eb;
+    }
 
-/* =====================
-   GALERÍA
-===================== */
-.gallery{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:1.5rem;
-}
-.gallery img{
-  width:100%;
-  border-radius:1.5rem;
-  object-fit:cover;
-  transition:.35s cubic-bezier(.4,0,.2,1);
-}
-.gallery img:hover{
-  transform:scale(1.05);
-  box-shadow:0 0 40px rgba(250,204,21,.35);
-}
+    .input-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
 
-/* =====================
-   WHATSAPP FLOAT
-===================== */
-.whatsapp-float{
-  position:fixed;
-  bottom:22px;
-  left:22px;
-  background:#25D366;
-  color:white;
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 10px 28px rgba(0,0,0,.35);
-  z-index:1000;
-  transition:.25s cubic-bezier(.4,0,.2,1);
-}
-.whatsapp-float:hover{transform:scale(1.12);}
+    footer {
+      margin-top: 4rem;
+      padding: 2rem 1rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+      font-size: 0.9rem;
+      color: #9ca3af;
+    }
 
-/* =====================
-   TOGGLE TEMA
-===================== */
-.toggle-theme{
-  position:fixed;
-  top:18px;
-  right:18px;
-  background:var(--bg-soft);
-  border:1px solid rgba(255,255,255,.12);
-  padding:7px 16px;
-  border-radius:999px;
-  font-size:.8rem;
-  cursor:pointer;
-  z-index:1000;
-  backdrop-filter:blur(10px);
-  transition:.25s;
-}
-.toggle-theme:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.25);}
+    footer a {
+      color: #a78bfa;
+      text-decoration: none;
+      margin: 0 0.5rem;
+      cursor: pointer;
+    }
 
-/* =====================
-   CHAT
-===================== */
-.chat-box{
-  position:fixed;
-  bottom:22px;
-  right:22px;
-  background:var(--bg-soft);
-  border-radius:18px;
-  padding:12px;
-  width:300px;
-  max-height:420px;
-  display:flex;
-  flex-direction:column;
-  z-index:999;
-  border:1px solid rgba(255,255,255,.08);
-  box-shadow:0 14px 40px rgba(0,0,0,.4);
-}
-.chat-log{flex:1;overflow-y:auto;margin-bottom:10px;font-size:.85rem;}
-.chat-log div{margin-bottom:6px;line-height:1.4;}
-.chat-input{display:flex;gap:.5rem;}
-.chat-input input{
-  flex:1;
-  padding:8px 10px;
-  border-radius:10px;
-  border:none;
-  background:#111827;
-  color:white;
-}
-.chat-input button{
-  background:var(--accent);
-  color:#0f0f14;
-  padding:6px 14px;
-  border-radius:10px;
-  font-weight:600;
-  transition:.2s;
-}
-.chat-input button:hover{filter:brightness(1.1);}
+    footer a:hover {
+      text-decoration: underline;
+    }
 
-.social-icon{width:20px;height:20px;object-fit:contain;display:inline-block}
-/* =====================
-   LICENCIA BOX
-===================== */
-.mq-license-box{
-  max-width:820px;
-  margin:5rem auto 6rem;
-  padding:2.5rem 2.2rem;
-  border-radius:1.75rem;
-  background:var(--bg-soft);
-  backdrop-filter:blur(14px);
-  border:1px solid rgba(255,255,255,.08);
-  text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,.4);
-}
-.mq-license-box h3{
-  font-size:1.6rem;
-  font-weight:800;
-  margin-bottom:1rem;
-}
-.mq-license-box p{margin-bottom:1rem;color:#d1d5db}
-.mq-license-box ul{
-  text-align:left;
-  max-width:420px;
-  margin:1.25rem auto 1.5rem;
-  color:#e5e7eb;
-}
-.mq-license-box li{margin-bottom:.4rem;}
-.mq-license-check{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:.5rem;
-  margin-bottom:1rem;
-}
-.mq-license-box button{
-  padding:.7rem 1.6rem;
-  border-radius:999px;
-  background:var(--accent);
-  color:#000;
-  font-weight:700;
-  transition:.2s;
-}
-.mq-license-box button:disabled{
-  opacity:.45;
-  cursor:not-allowed;
-}
-.mq-license-box button:not(:disabled):hover{
-  transform:translateY(-1px);
-  filter:brightness(1.05);
-  box-shadow:0 10px 24px rgba(250,204,21,.35);
-}
-</style>
+    /* ================= ANIMACIONES ================= */
+
+    @keyframes bounce-slow {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    .animate-bounce-slow {
+      animation: bounce-slow 3s infinite;
+    }
+
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.35; }
+    }
+    .animate-pulse-slow {
+      animation: pulse-slow 6s infinite;
+    }
+
+    .glow {
+      box-shadow: 0 0 40px rgba(124,58,237,0.25);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.35rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(124,58,237,0.15);
+      color: #c4b5fd;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+  </style>
 </head>
-
 <body>
 
-<!-- ================= MERCADO PAGO/MAXIQUEEN OS ================= -->
-
- <div class="box">
-    <h1>Pago seguro MAXIQUEEN OS</h1>
-    <p>Finaliza tu compra usando MercadoPago.</p>
-
-    <!-- BOTÓN MERCADOPAGO -->
-    <script
-      src="https://www.mercadopago.com.co/integrations/v1/web-payment-checkout.js"
-      data-preference-id="453634078-e7931b13-abe1-45f2-95db-398ab50f1db0"
-      data-source="button">
-    </script>
-
+  <div class="container center">
+    <span class="badge animate-pulse-slow">MAXIQUEEN OS 👑</span>
+    <h1 class="animate-bounce-slow">Builder OS para humanos reales</h1>
+    <p>Un sistema operativo mental, técnico y estratégico para crear, vender y escalar sin fragmentación.</p>
   </div>
 
-<!-- ================= TOGGLE DARK/LIGHT ================= -->
-<button class="toggle-theme" onclick="toggleTheme()" aria-label="Cambiar tema">🌗 MaxiTema</button>
-
-
-<!-- ================= WHATSAPP FLOAT ================= -->
-<a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Vengo%20desde%20la%20landing%20y%20quiero%20activar%20el%20sistema."
-   target="_blank"
-   rel="noopener"
-   class="whatsapp-float"
-   aria-label="WhatsApp MaxiQueen OS">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="white" width="26" aria-hidden="true">
-    <path d="M380.9 97.1C339-3.8 211.2-34.6 119.8 19.5 34.4 71.2-8.7 180.1 20.4 272.5L0 512l245.1-64.2c95.5 27.8 196.5-16.7 247.1-104.4 43.5-75.7 32.3-173.7-25.3-246.3z"/>
-  </svg>
-</a>
-
-<!-- ================= PRUEBA CRM LABORATORIO ================= -->
-<section class="py-8 text-center">
-  <a href="/labs/crm-demo/" target="_blank" rel="noopener" class="text-amber-400 hover:underline font-semibold">
-    Ver demo CRM (laboratorio)
-  </a>
-  <div class="mt-3 text-xs text-zinc-400">
-    Demo / contenido en desarrollo – MaxiQueen OS
-  </div>
-</section>
-
-<!-- ================= HERO ULTRA-PRO ================= -->
-<section class="min-h-screen flex items-center justify-center text-center px-6 relative bg-[radial-gradient(circle_at_top,rgba(250,204,21,.18),transparent_60%)] overflow-hidden">
-
-  <!-- FONDO SUTIL -->
-  <div class="absolute inset-0 animate-pulse-slow opacity-20 bg-[url('assets/MAXIQUEEN_LOGO.png')] bg-no-repeat bg-center bg-contain pointer-events-none"></div>
-
-  <div class="relative z-10 max-w-3xl fade-in">
-
-    <!-- LOGO -->
-    <div class="hero-avatar inline-block mb-2">
-      <img src="assets/MAXIQUEEN_LOGO.png"
-           alt="MaxiQueen OS Logo"
-           class="w-40 md:w-48 mx-auto animate-bounce-slow"
-           loading="eager"
-           decoding="async">
+  <div class="chat card glow">
+    <div class="messages" id="messages"></div>
+    <div class="input-row">
+      <input id="input" type="text" placeholder="Escribe aquí..." />
+      <button onclick="sendMessage()">Enviar</button>
     </div>
-
-    <h1 class="mt-6 text-4xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-rose-400">
-      Maxiqueen OS
-      <span class="text-zinc-200 block mt-2 text-lg md:text-2xl font-semibold">
-        Convierte tu caos digital en un sistema inteligente
-      </span>
-    </h1>
-
-    <p class="mt-6 text-zinc-300 text-lg md:text-xl leading-relaxed">
-      ⚠️ MaxiQueen OS es el sistema digital humano que transforma ideas, historias y negocios
-      en activos automatizados que generan ingresos reales.
-    </p>
-
-    <div class="mt-10 flex gap-4 flex-wrap justify-center">
-      <a href="#planes"
-         class="px-10 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-rose-400 hover:scale-105 hover:brightness-110 transition-transform text-black font-bold shadow-lg">
-        Activar mi Sistema
-      </a>
-      <a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Quiero%20hablar%20con%20un%20humano."
-         target="_blank"
-         rel="noopener"
-         class="px-10 py-4 rounded-2xl border border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black transition-all font-semibold">
-        Hablar con un humano
-      </a>
-    </div>
-
-    <p class="mt-10 text-sm text-zinc-400">
-      No agencia · No plantillas · No humo · Solo sistemas reales
-    </p>
   </div>
-</section>
 
-
-<!-- ================= FOOTER FLOATEANTE ================= -->
-<footer class="py-6 mt-12 mx-6 text-center bg-black/50 backdrop-blur-md text-zinc-300 rounded-full shadow-inner fade-in">
-  <p class="mb-2 text-lg md:text-base">
-    Sistema desarrollado por <strong>César Julio Bedoya Barragán</strong>
-  </p>
-  <p>
-    <a href="https://orcid.org/0009-0004-4946-1374"
-       target="_blank"
-       rel="noopener"
-       class="text-amber-400 hover:underline hover:text-rose-400 transition-colors">
-      ORCID: 0009-0004-4946-1374
-    </a>
-  </p>
-<div class="mt-4 flex justify-center gap-4 text-sm text-zinc-400">
-  <button onclick="openLegal('privacy')" class="hover:text-amber-400 transition">Privacidad</button>
-  <button onclick="openLegal('cookies')" class="hover:text-amber-400 transition">Cookies</button>
-  <button onclick="openLegal('terms')" class="hover:text-amber-400 transition">Términos</button>
-</div>
-
-</footer>
-
-<!-- ================= JS 3D HOVER ================= -->
-<script>
-const floatElements = document.querySelectorAll('.float-3d');
-const bgCircles = document.querySelectorAll('.background-circle');
-
-document.addEventListener('mousemove', e => {
-  const x = e.clientX / window.innerWidth - 0.5;
-  const y = e.clientY / window.innerHeight - 0.5;
-
-  floatElements.forEach(el => {
-    const depth = 18;
-    el.style.transform = `rotateY(${x * depth}deg) rotateX(${-y * depth}deg) translateZ(0)`;
-  });
-
-  bgCircles.forEach((el, i) => {
-    const factor = (i + 1) * 28;
-    el.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
-  });
-});
-
-// Footer flotante con scroll (optimizado)
-const footer = document.querySelector('footer');
-let lastScrollY = 0;
-window.addEventListener('scroll', () => {
-  const scrollY = window.scrollY;
-  if (Math.abs(scrollY - lastScrollY) < 4) return;
-  lastScrollY = scrollY;
-
-  const maxScroll = document.body.scrollHeight - window.innerHeight || 1;
-  const footerLift = (scrollY / maxScroll) * 26;
-  footer.style.transform = `translateY(-${footerLift}px)`;
-  footer.style.boxShadow = `0 ${10 + footerLift/2}px ${20 + footerLift/2}px rgba(0,0,0,0.45)`;
-});
-</script>
-
-<!-- ================= ANIMACIONES CSS ================= -->
-<style>
-  @keyframes bounce-slow {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
-  }
-  .animate-bounce-slow {
-    animation: bounce-slow 3s infinite;
-  }
-
-  @keyframes pulse-slow {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 0.35; }
-  }
-  .animate-pulse-slow {
-    animation: pulse-slow 6s infinite;
-  }
-</style>
-
-<!-- ================= PROBLEMA / SOLUCIÓN ================= -->
-<section class="py-24 px-6 fade-in bg-black/40">
-  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-14 items-center">
-
+  <footer>
     <div>
-      <h2 class="text-3xl md:text-4xl font-bold mb-6">El problema</h2>
-      <ul class="space-y-3 text-zinc-300">
-        <li>❌ Tienes ideas pero no sistema</li>
-        <li>❌ Publicas pero no vendes</li>
-        <li>❌ Automatizas sin estructura</li>
-        <li>❌ Usas herramientas, pero no tienes operación</li>
-      </ul>
+      <a onclick="openLegal('privacy')">Privacidad</a> ·
+      <a onclick="openLegal('cookies')">Cookies</a> ·
+      <a onclick="openLegal('terms')">Términos</a>
     </div>
-
-    <div class="glass p-10 rounded-3xl">
-      <h3 class="text-2xl font-bold mb-4">La solución</h3>
-      <p class="text-zinc-300 mb-4">MaxiQueen OS convierte tu caos digital en:</p>
-      <ul class="space-y-3 text-zinc-300">
-        <li>✅ Contenido que conecta</li>
-        <li>✅ Plataformas que convierten</li>
-        <li>✅ Sistemas que trabajan solos</li>
-        <li>✅ Procesos que escalan</li>
-      </ul>
+    <div style="margin-top:0.75rem;">
+      © <span id="year"></span> MaxiQueen OS. Todos los derechos reservados.
     </div>
-
-  </div>
-</section>
-
-
-<!-- ================= QUÉ ES ================= -->
-<section id="sistema" class="py-24 px-6 fade-in">
-  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-14 items-center">
-
-    <div>
-      <h2 class="text-3xl md:text-4xl font-bold mb-6">¿Qué es MaxiQueen OS?</h2>
-      <p class="text-lg text-zinc-300 mb-4">
-        MaxiQueen OS no es una marca. Es un sistema digital integral diseñado para personas reales
-        que quieren crear, vender, automatizar y crecer sin depender de soluciones fragmentadas.
-      </p>
-      <p class="text-lg text-zinc-300">No vendemos páginas. Vendemos sistemas que producen resultados.</p>
-    </div>
-
-    <div class="glass p-10 rounded-3xl">
-      <h3 class="text-xl font-semibold mb-4">🧩 Módulos del Sistema</h3>
-      <ul class="space-y-3 text-zinc-300">
-        <li>🎨 Contenido creativo (guiones, caricaturas, reels, TikTok)</li>
-        <li>📱 Crecimiento en redes sociales con narrativa real y viral</li>
-        <li>🌐 Webs, landings y tiendas listas para vender</li>
-        <li>🛒 Estructura comercial (productos, inventario, funnels)</li>
-        <li>⚙️ Automatización real (deploy, subdominios, GitHub, VPS)</li>
-        <li>🧠 Asistencia estratégica (legal básica, laboral, análisis)</li>
-      </ul>
-    </div>
-
-  </div>
-</section>
-
-
-<!-- ================= TESTIMONIOS ================= -->
-<section class="py-24 px-6 fade-in bg-black/40">
-  <div class="max-w-6xl mx-auto text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-12">Resultados reales</h2>
-
-    <div class="grid md:grid-cols-3 gap-8">
-
-      <div class="glass p-8 rounded-3xl">
-        <p class="text-zinc-300 mb-4">"Pasé de tener ideas sueltas a un sistema que vende todos los días. MaxiQueen OS me ordenó la cabeza y el negocio."</p>
-        <p class="font-semibold">— Emprendedor digital</p>
-      </div>
-
-      <div class="glass p-8 rounded-3xl">
-        <p class="text-zinc-300 mb-4">"No es marketing. Es estructura. Ahora sé exactamente qué publicar, cómo vender y cómo escalar."</p>
-        <p class="font-semibold">— Creadora de contenido</p>
-      </div>
-
-      <div class="glass p-8 rounded-3xl">
-        <p class="text-zinc-300 mb-4">"MaxiQueen OS no me dio una web. Me dio un sistema completo funcionando."</p>
-        <p class="font-semibold">— Negocio local</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ================= GALERÍA ================= -->
-<section class="py-24 px-6 fade-in">
-  <div class="max-w-6xl mx-auto text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-4">Sistema en acción</h2>
-    <p class="text-zinc-400 mb-12">
-      Casos reales · Módulos · Implementaciones
-    </p>
-
-    <div class="gallery grid grid-cols-1 md:grid-cols-3 gap-6" id="dynamicGallery">
-
-      <!-- Módulo Creativo -->
-      <div class="relative cursor-pointer group rounded-3xl overflow-hidden">
-        <img src="assets/img/modulo-creativo.png"
-             alt="Módulo Creativo"
-             class="rounded-3xl w-full h-full object-cover"
-             loading="lazy"
-             onclick="openLightbox(this.src)">
-      </div>
-
-      <!-- Módulo Social -->
-      <div class="relative cursor-pointer group rounded-3xl overflow-hidden">
-        <img src="assets/img/modulo-social.png"
-             alt="Social Media"
-             class="rounded-3xl w-full h-full object-cover"
-             loading="lazy"
-             onclick="openLightbox(this.src)">
-      </div>
-
-      <!-- Módulo Web -->
-      <div class="relative cursor-pointer group rounded-3xl overflow-hidden">
-        <img src="assets/img/modulo-web.png"
-             alt="Web & Hosting"
-             class="rounded-3xl w-full h-full object-cover"
-             loading="lazy"
-             onclick="openLightbox(this.src)">
-      </div>
-
-      <!-- Automatización -->
-      <div class="relative cursor-pointer group rounded-3xl overflow-hidden">
-        <img src="assets/img/modulo-automatizacion.png"
-             alt="Automatización"
-             class="rounded-3xl w-full h-full object-cover"
-             loading="lazy"
-             onclick="openLightbox(this.src)">
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-<!-- ================= LIGHTBOX ================= -->
-<div id="lightbox" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50">
-  <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl" aria-label="Cerrar">✕</button>
-  <div id="lightboxContent" class="max-w-4xl w-full px-4"></div>
-</div>
-
-<!-- ================= PLANES ================= -->
-<section id="planes" class="py-24 px-6 fade-in bg-black/40">
-  <div class="max-w-6xl mx-auto text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-14">Activa tu Sistema</h2>
-
-    <div class="grid md:grid-cols-3 gap-10">
-
-      <div class="glass p-10 rounded-3xl hover:scale-[1.02] transition">
-        <h3 class="text-xl font-semibold mb-4">👑 Starter</h3>
-        <p class="text-zinc-300 mb-5">
-          Landing page, 5 guiones, hosting básico, onboarding
-        </p>
-        <p class="font-bold mb-6" style="color:var(--accent)">USD $49 / mes</p>
-        <a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Quiero%20activar%20el%20plan%20Starter."
-           target="_blank"
-           rel="noopener"
-           class="inline-block px-8 py-3 bg-[color:var(--accent)] hover:brightness-110 rounded-xl font-bold text-black transition">
-          Activar Starter
-        </a>
-      </div>
-
-      <div class="glass p-10 rounded-3xl scale-[1.05] ring-2 ring-yellow-400/40 hover:scale-[1.07] transition">
-        <h3 class="text-xl font-semibold mb-4">💰 Pro</h3>
-        <p class="text-zinc-300 mb-5">
-          Web completa, 15 guiones, automatización, soporte estratégico
-        </p>
-        <p class="font-bold mb-6" style="color:var(--accent)">USD $99 / mes</p>
-        <a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Quiero%20activar%20el%20plan%20Pro."
-           target="_blank"
-           rel="noopener"
-           class="inline-block px-8 py-3 bg-[color:var(--accent)] hover:brightness-110 rounded-xl font-bold text-black transition">
-          Activar Pro
-        </a>
-      </div>
-
-      <div class="glass p-10 rounded-3xl hover:scale-[1.02] transition">
-        <h3 class="text-xl font-semibold mb-4">🔵 Elite</h3>
-        <p class="text-zinc-300 mb-5">
-          Sistema completo, automatización avanzada, soporte prioritario
-        </p>
-        <p class="font-bold mb-6" style="color:var(--accent)">USD $199 / mes</p>
-        <a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Quiero%20activar%20el%20plan%20Elite."
-           target="_blank"
-           rel="noopener"
-           class="inline-block px-8 py-3 bg-[color:var(--accent)] hover:brightness-110 rounded-xl font-bold text-black transition">
-          Activar Elite
-        </a>
-      </div>
-
-    </div>
-
-    <p class="mt-10 text-sm text-zinc-400">
-      Soporte humano · Sin contratos · Cancela cuando quieras
-    </p>
-  </div>
-</section>
-
-<!-- ================= ORIGEN / AUTORIDAD ================= -->
-<section id="equipo" class="py-24 px-6 fade-in">
-  <div class="max-w-5xl mx-auto text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-10">Origen del Sistema</h2>
-
-    <div class="glass p-10 rounded-3xl text-zinc-300 leading-relaxed">
-      <p class="mb-5">
-        <strong class="text-white">
-          MAXIQUEEN nace como un proyecto familiar y evoluciona como un sistema profesional.
-        </strong>
-      </p>
-      <p class="mb-5">
-        La identidad visual y el nombre de la marca fueron creados por mis hermanas,
-        quienes aportaron la base creativa y estética que dio origen a MAXIQUEEN.
-      </p>
-      <p class="mb-5">
-        Todo el desarrollo, arquitectura, automatización, estrategia y expansión del sistema
-        ha sido diseñado y gestionado por mí.
-      </p>
-      <p class="font-semibold text-white">
-        MAXIQUEEN OS no es una agencia: es un sistema digital original construido desde experiencia real,
-        organización del caos y ejecución humana con tecnología.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- ================= CTA FINAL ================= -->
-<section class="py-24 px-6 fade-in bg-black/40">
-  <div class="max-w-4xl mx-auto text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-6">¿Listo para activar tu sistema?</h2>
-    <p class="text-zinc-300 mb-10">
-      Si estás cansado de improvisar y quieres operar con estructura real, MaxiQueen OS es para ti.
-    </p>
-
-    <a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Estoy%20listo%20para%20activar%20mi%20sistema."
-       target="_blank"
-       rel="noopener"
-       class="inline-block px-12 py-4 rounded-2xl bg-[color:var(--accent)] hover:brightness-110 text-black font-extrabold shadow-xl transition">
-      Activar ahora
-    </a>
-  </div>
-</section>
-
-<!-- ================= RECURSOS DE REFUERZO ================= -->
-<section class="py-24 px-6 bg-black/30 fade-in">
-  <div class="max-w-5xl mx-auto text-center">
-    <h3 class="text-2xl font-bold mb-10">Enlaces y Recursos</h3>
-
-    <ul class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl mx-auto text-left text-zinc-300">
-      <li><a class="hover:text-amber-400 transition" href="https://app-vlc.hotmart.com/affiliate-recruiting/view/6489M103285849" target="_blank" rel="noopener">💻 Afiliados</a></li>
-      <li><a class="hover:text-amber-400 transition" href="https://go.hotmart.com/P103285828N?dp=1" target="_blank" rel="noopener">🛒 Hotmart Marketplace</a></li>
-      <li><a class="hover:text-amber-400 transition" href="https://pay.hotmart.com/P103285828N" target="_blank" rel="noopener">💳 Oferta 40% descuento</a></li>
-      <li><a class="hover:text-amber-400 transition" href="https://app.hotmart.com/membership/cesar-f9370874/community/management/15254181" target="_blank" rel="noopener">📂 Comunidad Hotmart</a></li>
-      <li><a class="hover:text-amber-400 flex items-center gap-2 transition" href="https://www.tiktok.com/@cesarbedoya9" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/TikTok_logo.svg" class="social-icon" alt=""> TikTok</a></li>
-      <li><a class="hover:text-amber-400 flex items-center gap-2 transition" href="https://www.instagram.com/maxiqueen_store?igsh=MXV5eWM3azR1cWpkbA%3D%3D" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" class="social-icon" alt=""> Instagram</a></li>
-      <li><a class="hover:text-amber-400 flex items-center gap-2 transition" href="https://www.facebook.com/share/1DVm7tXTEm/" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" class="social-icon" alt=""> Facebook</a></li>
-      <li><a class="hover:text-amber-400 flex items-center gap-2 transition" href="https://www.youtube.com/@cesarbedoya2288" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" class="social-icon" alt=""> YouTube</a></li>
-      <li><a class="hover:text-amber-400 flex items-center gap-2 transition" href="https://wa.me/573016625921?text=Hola%20MAXIQUEENOS.%20Vengo%20desde%20la%20página%20y%20quiero%20aplicar%20al%20PROCESO." target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="social-icon" alt=""> WhatsApp</a></li>
-    </ul>
-  </div>
-</section>
-<!-- ================= LICENCIA ================= -->
-<section class="mq-license-box fade-in">
-
-  <h3>Antes de entrar al sistema</h3>
-  <p>Este sistema funciona bajo principios humanos y estructurales:</p>
-
-  <ul class="mq-rules">
-    <li>Mantener criterio humano en decisiones críticas</li>
-    <li>Respetar el Método MaxiQueen OS</li>
-    <li>No usar automatización deshumanizada</li>
-  </ul>
-
-  <label class="mq-license-check">
-    <input type="checkbox" id="acceptMQ" />
-    Acepto la
-    <a href="/licencia-maxiqueenos.pdf" target="_blank" rel="noopener" class="text-amber-400 hover:underline">
-      Licencia MaxiQueen OS
-    </a>
-  </label>
-
-  <button id="continueMQ" disabled>
-    Entrar al sistema
-  </button>
-
-</section>
-<!-- ================= CHAT ================= -->
-<div class="chat-box" id="chatBox" role="dialog" aria-label="Chat MaxiQueen OS">
-  <div class="chat-log" id="chatLog" aria-live="polite"></div>
-  <div class="chat-input">
-    <input type="text" id="userInput" placeholder="Soy MaxiBot. Escribe tu pregunta..." aria-label="Mensaje">
-    <button onclick="sendMessage()">Enviar</button>
-  </div>
-</div>
-
-<script>
-
-/* =======================
-   THEME TOGGLE
-======================= */
-function toggleTheme(){
-  const root = document.documentElement;
-  const current = root.getAttribute('data-theme') || 'dark';
-  const next = current === 'dark' ? 'light' : 'dark';
-  root.setAttribute('data-theme', next);
-  localStorage.setItem('mq-theme', next);
-}
-(function(){
-  const saved = localStorage.getItem('mq-theme');
-  if(saved) document.documentElement.setAttribute('data-theme', saved);
-})();
-
-/* =======================
-   LIGHTBOX
-======================= */
-const lightbox = document.getElementById('lightbox');
-const lightboxContent = document.getElementById('lightboxContent');
-
-function openLightbox(src){
-  lightboxContent.innerHTML = `<img src="${src}" class="w-full rounded-2xl shadow-xl" alt="">`;
-  lightbox.classList.remove('hidden');
-  lightbox.classList.add('flex');
-}
-function closeLightbox(){
-  lightbox.classList.add('hidden');
-  lightbox.classList.remove('flex');
-}
-lightbox.addEventListener('click', e => {
-  if(e.target === lightbox) closeLightbox();
-});
-
-
-/* =======================
-   LICENCIA CHECK
-======================= */
-const acceptMQ = document.getElementById('acceptMQ');
-const continueMQ = document.getElementById('continueMQ');
-if(acceptMQ){
-  acceptMQ.addEventListener('change', () => {
-    continueMQ.disabled = !acceptMQ.checked;
-  });
-}
-
-const chatLog = document.getElementById('chatLog');
-const input = document.getElementById('userInput');
-
-/* =========================
-   🧠 ESTADO GLOBAL
-========================= */
-let state = {
-  flujo: null,      
-  etapa: null,      
-  nivelDetectado: null,
-  tema: null,
-  ultimaPregunta: null
-};
-
-/* =========================
-   📦 RESPUESTAS BASE
-========================= */
-const triggers = {
-  sistema: {
-    quienSoy: `
-👑 ¿Quién soy?
-
-Soy MaxiQueen OS.
-No soy un bot tradicional.
-No soy un asistente automático frío.
-
-Soy un sistema conversacional diseñado para:
-✔ Ordenar ideas
-✔ Aclarar decisiones
-✔ Construir estructura
-✔ Acompañar procesos reales
-
-No reemplazo humanos.
-No doy respuestas vacías.
-No improviso.
-
-Funciono como:
-🧠 Guía
-🧭 Sistema de pensamiento
-🤝 Puente entre intención y estructura
-
-Si quieres, dime:
-👉 ¿Estás aquí más por claridad, por proyecto o por acompañamiento humano? 👀
-`,
-    queEs: `
-👑 ¿Qué es MaxiQueen OS?
-
-MaxiQueen OS es un sistema digital integral de:
-✔ Contenido
-✔ Estructura
-✔ Conversación
-✔ Automatización
-✔ Acompañamiento humano
-
-No es una herramienta.
-No es solo una web.
-No es solo un bot.
-
-Es un sistema que:
-✔ Piensa contigo
-✔ Te ordena por dentro
-✔ Te da dirección
-✔ Te ayuda a convertir intención en acción
-
-Si quieres, dime:
-👉 ¿Lo estás viendo más como ayuda personal, proyecto de negocio o crecimiento? 👀
-`,
-    comoFunciona: `
-👑 ¿Cómo funciona MaxiQueen OS?
-
-Funciona en capas:
-
-1️⃣ Conversación → te escucho
-2️⃣ Diagnóstico → entiendo tu situación
-3️⃣ Estructura → ordenamos ideas, proyecto o proceso
-4️⃣ Sistema → construimos algo estable
-5️⃣ Acompañamiento → no te dejo solo
-
-No es:
-❌ Automatización sin criterio
-❌ Contenido vacío
-❌ Respuestas rápidas sin profundidad
-
-Es:
-✔ Proceso
-✔ Sistema
-✔ Pensamiento estructurado
-
-Si quieres, dime:
-👉 ¿Te gustaría entenderlo más desde lo personal o desde lo técnico? 👀
-`,
-    diagnostico: `
-👑 ¿Qué es el diagnóstico en MaxiQueen OS?
-
-No es un test.
-No es un formulario.
-No es una etiqueta.
-
-Es una lectura real de:
-✔ Tu nivel actual
-✔ Tu estado mental
-✔ Tu etapa de proyecto
-✔ Tu tipo de bloqueo
-✔ Tu tipo de crecimiento
-
-Sirve para:
-✔ No venderte lo que no necesitas
-✔ No forzarte procesos incorrectos
-✔ No hacerte perder tiempo
-✔ Construir desde donde estás, no desde donde “deberías estar”
-
-Si quieres, dime:
-👉 ¿Quieres que te haga un diagnóstico ahora mismo? 👀
-`,
-    claridad: `
-👑 ¿Qué significa “claridad” aquí?
-
-No es motivación.
-No es “pensar positivo”.
-No es solo tener ideas.
-
-Claridad es:
-✔ Saber qué hacer primero
-✔ Saber qué no hacer
-✔ Saber por qué haces algo
-✔ Tener dirección sin ansiedad
-✔ Sentirte estable aunque el camino no esté completo
-
-En MaxiQueen OS, claridad = estructura mental funcional.
-
-Si quieres, dime:
-👉 ¿Sientes más ruido mental, bloqueo o exceso de ideas ahora mismo? 👀
-`,
-    servicio: `
-👑 ¿Cómo es el servicio en MaxiQueen OS?
-
-No es atención automática.
-No es soporte técnico frío.
-No es solo responder mensajes.
-
-Es:
-✔ Acompañamiento humano real
-✔ Conversación con criterio
-✔ Guía estratégica
-✔ Seguimiento de procesos
-✔ Apoyo cuando hay bloqueo
-
-No tratamos problemas.
-Tratamos procesos.
-
-Si quieres, dime:
-👉 ¿Buscas más guía, acompañamiento o estructura ahora mismo? 👀
-`,
-    asesoria: `
-👑 ¿Cómo es la asesoría?
-
-No es consultoría tradicional.
-No es coaching motivacional vacío.
-No es mentoría genérica.
-
-Es:
-✔ Diagnóstico real
-✔ Claridad estratégica
-✔ Diseño de sistema
-✔ Acompañamiento práctico
-✔ Pensamiento estructurado
-
-No te decimos qué hacer.
-Construimos contigo qué tiene sentido hacer.
-
-Si quieres, dime:
-👉 ¿Estás más en ideas, bloqueo o crecimiento ahora mismo? 👀
-`,
-    soporte: `
-👑 ¿Cómo es el soporte?
-
-No es tickets.
-No es respuestas automáticas.
-No es “revise la FAQ”.
-
-Es:
-✔ Contacto humano directo
-✔ Conversación real
-✔ Resolución con criterio
-✔ Acompañamiento cuando te atoras
-
-Soporte aquí no es técnico.
-Es estructural y humano.
-
-Si quieres, dime:
-👉 ¿Prefieres WhatsApp o Instagram para hablar ahora? 👀
-`,
-    comunidad: `
-👑 ¿Qué es la Comunidad MaxiQueen?
-
-No es un grupo de ruido.
-No es motivación vacía.
-No es consumo de contenido.
-
-Es un espacio para:
-✔ Pensar
-✔ Ordenar
-✔ Construir
-✔ Tomar decisiones
-✔ Avanzar con estructura
-
-Aquí no vienes a mirar.
-Vienes a trabajar en ti y en tu proceso.
-
-Si quieres, dime:
-👉 ¿Te interesa más comunidad o acompañamiento 1:1? 👀
-`,
-    sesiones: `
-👑 ¿Qué son las sesiones reales?
-
-Son encuentros humanos, no automáticos.
-
-Sirven para:
-✔ Desbloquear
-✔ Tomar decisiones
-✔ Reordenar procesos
-✔ Aclarar dirección
-✔ Corregir rumbo
-
-No son charlas motivacionales.
-Son sesiones estratégicas.
-
-Si quieres, dime:
-👉 ¿Te serviría más una sesión de claridad o de estructura ahora mismo? 👀
-`,
-    equipo: `
-👑 ¿Cuántas personas hay en MaxiQueen OS?
-
-MaxiQueen OS no es una empresa tradicional.
-Es un sistema en expansión.
-
-Tiene:
-✔ Núcleo humano estratégico
-✔ Acompañamiento directo
-✔ Infraestructura digital
-✔ Comunidad en crecimiento
-
-No medimos valor en cantidad de personas.
-Medimos valor en calidad de proceso.
-
-Si quieres, dime:
-👉 ¿Te interesa más quiénes somos o cómo podemos ayudarte? 👀
-`
-  },
-
-  emociones: {
-    pereza: `
-Gracias por decirlo directo 👑  
-
-La pereza muchas veces no es flojera.
-Es:
-✔ Cansancio mental
-✔ Saturación
-✔ Falta de dirección
-✔ Exceso sin estructura
-
-No se soluciona empujando.
-Se soluciona ordenando.
-
-Si quieres, dime:
-👉 ¿Te sientes más cansado, saturado o confundido ahora mismo? 👀
-`,
-    cansancio: `
-Tiene todo el sentido 👑  
-
-El cansancio no siempre es físico.
-Muchas veces es mental:
-✔ Demasiadas decisiones
-✔ Demasiadas ideas
-✔ Poco orden
-✔ Mucha presión interna
-
-No necesitas más motivación.
-Necesitas estructura liviana.
-
-Si quieres, dime:
-👉 ¿Te sientes más bloqueado, saturado o sin dirección ahora mismo? 👀
-`,
-    frustracion: `
-Gracias por decirlo 👑  
-
-La frustración casi nunca es falta de capacidad.
-Es falta de estructura en medio de intención.
-
-No se arregla empujando más.
-Se arregla ordenando mejor.
-
-Si quieres, dime:
-👉 ¿Te frustra más no avanzar o no saber qué avanzar? 👀
-`
-  },
-
-  ventas: {
-    planes: `
-👑 PLANES MAXIQUEEN OS — claros, humanos y sin letra pequeña
-
-No vendemos herramientas.
-No vendemos plataformas.
-No vendemos humo.
-
-Construimos sistemas que piensan contigo,
-te ordenan por dentro,
-y convierten intención en estructura real.
-
-━━━━━━━━━━━━━━━━━━━━━━
-
-🌱 👑 STARTER — $49/mes
-Ideal si hoy tienes ideas, pero no sistema.
-
-✔ Orden mental y estratégico
-✔ Diagnóstico real
-✔ Base operativa clara
-✔ Ruta de acción sin ruido
-✔ Acompañamiento inicial humano
-
-Perfecto para:
-Personas bloqueadas,
-emprendedores en inicio,
-creadores con ideas dispersas.
-
-━━━━━━━━━━━━━━━━━━━━━━
-
-🚀 👑 PRO — $99/mes
-Para crecer, vender y automatizar con estructura.
-
-✔ Todo lo de Starter
-✔ Sistema activo de ventas
-✔ Automatizaciones clave
-✔ Optimización de procesos
-✔ Acompañamiento continuo
-
-Perfecto para:
-Negocios en marcha,
-creadores que ya venden sin sistema,
-personas listas para estructurar crecimiento.
-
-━━━━━━━━━━━━━━━━━━━━━━
-
-🏰 👑 ELITE — $199/mes
-Infraestructura completa + acompañamiento prioritario.
-
-✔ Todo lo de Pro
-✔ Arquitectura completa del sistema
-✔ Automatización avanzada
-✔ Control total del ecosistema
-✔ Acceso directo a soporte humano
-
-Perfecto para:
-Marcas, creadores y proyectos
-que quieren crecer con estabilidad real.
-
-━━━━━━━━━━━━━━━━━━━━━━
-
-Si quieres, dime:
-👉 ¿Estás más en ideas, negocio activo o crecimiento serio ahora mismo? 👀👑
-`,
-    valor: `
-👑 ¿POR QUÉ MAXIQUEEN OS?
-
-No vendemos bots.
-No vendemos funnels.
-No vendemos automatización por automatizar.
-
-Vendemos:
-✔ Claridad
-✔ Orden
-✔ Dirección
-✔ Decisión
-✔ Sistema
-
-━━━━━━━━━━━━━━━━━━━━━━
-
-Esto es lo que normalmente cambia en las personas:
-
-✔ Menos ruido mental
-✔ Menos decisiones improvisadas
-✔ Más foco
-✔ Más estructura
-✔ Más avance real
-✔ Menos ansiedad por “no saber qué hacer”
-
-━━━━━━━━━━━━━━━━━━━━━━
-
-El valor no es tener una web.
-No es tener un bot.
-No es tener automatización.
-
-El valor es:
-Saber exactamente qué hacer con tu proyecto
-cuando nadie más te lo puede ordenar.
-
-Si quieres, dime:
-👉 ¿Hoy te falta más claridad, estructura o acompañamiento? 👑
-`
-  },
-
-  onboarding: {
-    inicio: `
-Hola 👑  
-Estoy aquí contigo, con calma.
-
-No soy un bot de respuestas rápidas.
-Soy parte del sistema MaxiQueen OS.
-
-¿En qué punto estás ahora mismo?
-
-1️⃣ Ideas  
-2️⃣ Bloqueo  
-3️⃣ Crecimiento  
-👉 o pereza / cansancio
-`
-  },
-
-  guia: {
-    flujo1: `
-👑 FLUJO 1 — ORDENAR IDEAS
-
-Este flujo es para ti si:
-✔ Tienes ideas, pero no sistema
-✔ Sientes ruido mental
-✔ No sabes por dónde empezar
-✔ Te cuesta tomar decisiones
-
-Aquí trabajamos:
-✔ Claridad personal
-✔ Dirección estratégica
-✔ Enfoque real
-✔ Prioridades concretas
-
-El objetivo no es hacer más.
-Es hacer mejor.
-
-Dime:
-👉 ¿Hoy sientes más confusión, bloqueo o exceso de ideas? 👀
-`,
-    flujo2: `
-👑 FLUJO 2 — CREAR ALGO VENDIBLE
-
-Este flujo es para ti si:
-✔ Ya tienes una idea clara
-✔ Quieres convertirla en oferta
-✔ Quieres vender sin improvisar
-✔ Quieres estructura comercial real
-
-Aquí trabajamos:
-✔ Propuesta de valor
-✔ Oferta clara
-✔ Mensaje correcto
-✔ Sistema de conversión
-
-El objetivo no es vender rápido.
-Es vender bien.
-
-Dime:
-👉 ¿Hoy tienes una idea clara o algo ya en marcha? 👀
-`,
-    flujo3: `
-📲 CONTACTO HUMANO — SIN BOTS
-
-Aquí no te responde un sistema.
-Te responde una persona real.
-
-Canales disponibles:
-✔ WhatsApp — atención directa
-✔ Instagram — contacto rápido
-✔ Comunidad — acompañamiento continuo
-
-Dime:
-👉 ¿Prefieres WhatsApp o Instagram ahora mismo? 👀
-`
-  },
-
-  comunidad: {
-    comunidad: `
-👥 COMUNIDAD MAXIQUEEN
-
-Este no es un grupo de ruido.
-No es motivación vacía.
-No es consumo de contenido.
-
-Es:
-✔ Acompañamiento humano
-✔ Sesiones reales
-✔ Seguimiento estratégico
-✔ Criterio compartido
-
-No entras para mirar.
-Entras para ordenar,
-decidir
-y avanzar.
-
-Dime:
-👉 ¿Prefieres empezar en comunidad o 1:1? 👀
-`
-  },
-
-  soporte: {
-    contacto: `
-📲 SOPORTE HUMANO
-
-Puedes hablar directamente con alguien real por:
-
-✔ WhatsApp:
-https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Vengo%20desde%20la%20landing%20y%20quiero%20activar%20el%20sistema.
-
-✔ Instagram
-✔ Comunidad interna
-
-Dime:
-👉 ¿Qué canal prefieres ahora mismo? 👀
-`
-  },
-
-  diagnostico: {
-    starter: `
-👑 Por lo que me cuentas, estás en etapa de **orden y claridad**.
-
-No necesitas más herramientas.
-Necesitas estructura básica bien hecha.
-
-Por eso, el punto ideal para ti ahora es:
-
-🌱 **STARTER**
-
-Te saca del ruido,
-te da base,
-y te deja listo para crecer sin caos.
-
-Si quieres, dime:
-👉 ¿Quieres que te explique cómo empezamos paso a paso? 👀
-`,
-    pro: `
-👑 Por lo que me cuentas, ya estás en **movimiento real**.
-
-No necesitas más ideas.
-Necesitas sistema, procesos y estructura de venta.
-
-Por eso, el punto ideal para ti ahora es:
-
-🚀 **PRO**
-
-Convierte tu esfuerzo en sistema,
-y tu sistema en crecimiento estable.
-
-Si quieres, dime:
-👉 ¿Quieres que te muestre cómo sería tu estructura inicial? 👀
-`,
-    elite: `
-👑 Por lo que me cuentas, estás en **etapa de expansión seria**.
-
-No necesitas hacks.
-Necesitas arquitectura sólida.
-
-Por eso, el punto ideal para ti ahora es:
-
-🏰 **ELITE**
-
-Sistema completo,
-control total,
-acompañamiento prioritario.
-
-Si quieres, dime:
-👉 ¿Quieres que veamos cómo se diseña tu ecosistema completo? 👀
-`
-  }
-};
-
-/* =========================
-   🎯 INTENTS BASE
-========================= */
-const intents = [
-  // Sistema / Identidad
-  {
-    keywords: ["quien eres","quién eres","que eres","qué eres"],
-    response: () => triggers.sistema.quienSoy
-  },
-  {
-    keywords: ["que es","qué es","qué es esto","que es esto","que es maxiqueen","qué es maxiqueen"],
-    response: () => triggers.sistema.queEs
-  },
-  {
-    keywords: ["como funciona","cómo funciona","funciona","como es el sistema"],
-    response: () => triggers.sistema.comoFunciona
-  },
-  {
-    keywords: ["diagnostico","diagnóstico"],
-    response: () => triggers.sistema.diagnostico
-  },
-  {
-    keywords: ["claridad","qué es claridad","que es claridad"],
-    response: () => triggers.sistema.claridad
-  },
-  {
-    keywords: ["servicio","cómo es el servicio","como es el servicio"],
-    response: () => triggers.sistema.servicio
-  },
-  {
-    keywords: ["asesoria","asesoría","cómo es la asesoria","como es la asesoria"],
-    response: () => triggers.sistema.asesoria
-  },
-  {
-    keywords: ["soporte","cómo es el soporte","como es el soporte"],
-    response: () => triggers.sistema.soporte
-  },
-  {
-    keywords: ["comunidad interna","que es la comunidad","qué es la comunidad"],
-    response: () => triggers.sistema.comunidad
-  },
-  {
-    keywords: ["sesiones","sesiones reales"],
-    response: () => triggers.sistema.sesiones
-  },
-  {
-    keywords: ["cuantas personas","cuántas personas","equipo","cuantos son"],
-    response: () => triggers.sistema.equipo
-  },
-
-  // Emociones
-  {
-    keywords: ["pereza","flojo","desganado"],
-    response: () => triggers.emociones.pereza
-  },
-  {
-    keywords: ["cansado","agotado","fatigado"],
-    response: () => triggers.emociones.cansancio
-  },
-  {
-    keywords: ["frustrado","frustración","estresado","estres"],
-    response: () => triggers.emociones.frustracion
-  },
-
-  // Ventas
-  {
-    keywords: ["precio","planes","pago"],
-    response: () => triggers.ventas.planes
-  },
-  {
-    keywords: ["costos","cuánto vale","cuanto cuesta","precio real"],
-    response: () => triggers.ventas.planes
-  },
-  {
-    keywords: ["valor","vale la pena","beneficio","beneficios","por qué","porque"],
-    response: () => triggers.ventas.valor
-  },
-
-  // Inicio
-  {
-    keywords: ["empezar","inicio","onboarding","arrancar","comenzar"],
-    response: () => triggers.onboarding.inicio
-  },
-  {
-    keywords: ["hola","buenas","hey","saludos"],
-    response: () => triggers.onboarding.inicio
-  },
-
-  // Flujos
-  {
-    keywords: ["1","ordenar","ordenar ideas","ideas"],
-    response: () => {
-      state.flujo = "flujo1";
-      state.etapa = "diagnostico";
-      return triggers.guia.flujo1;
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const messagesEl = document.getElementById("messages");
+    const input = document.getElementById("input");
+
+    function appendMessage(role, text) {
+      const div = document.createElement("div");
+      div.className = "msg " + role;
+      div.textContent = text;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
     }
-  },
-  {
-    keywords: ["2","crear","vendible","producto","oferta"],
-    response: () => {
-      state.flujo = "flujo2";
-      state.etapa = "diagnostico";
-      return triggers.guia.flujo2;
-    }
-  },
-  {
-    keywords: ["3","humano","persona","asesor","hablar","hablar con alguien"],
-    response: () => {
-      state.flujo = "flujo3";
-      state.etapa = "contacto";
-      return triggers.guia.flujo3;
-    }
-  },
 
-  // Confirmaciones
-  {
-    keywords: ["si","sí","ok","dale","vamos","perfecto","listo","de una"],
-    response: () => `
-Perfecto 👑  
-Entonces dime:
+    /* ================= SISTEMA DE ESTADO ================= */
 
-1️⃣ Ordenar ideas  
-2️⃣ Crear algo vendible  
-3️⃣ Hablar con alguien humano  
-`
-  }
-];
+    const state = {
+      etapa: "inicio",
+      flujo: null
+    };
 
-/* =========================
-   🧠 MOTOR DE CONTEXTO
-========================= */
-function contextualResponse(text) {
+    /* ================= INTENTS BASE ================= */
 
-  // FLUJO 1 — ORDENAR IDEAS
-  if (state.flujo === "flujo1" && state.etapa === "diagnostico") {
-    if (text.includes("confusion") || text.includes("confusión")) {
-      state.nivelDetectado = "starter";
-      state.etapa = "recomendacion";
-      return `
-Gracias por decirlo directo 👑  
+    const intents = [
+      {
+        keywords: ["hola", "hey", "buenas"],
+        response: () => "Hola 👑 Bienvenido a MaxiQueen OS.\n\n¿Quieres explorar el sistema o resolver algo concreto hoy?"
+      },
+      {
+        keywords: ["precio", "coste", "cuesta"],
+        response: () => "Buena pregunta 👑\nMaxiQueen OS no es un producto único: es un sistema modular.\nPrimero entendemos tu situación y luego diseñamos la estructura correcta contigo."
+      },
+      {
+        keywords: ["contacto", "hablar", "persona"],
+        response: () => {
+          state.flujo = "flujo3";
+          return "Perfecto 👑\n¿Prefieres contacto por WhatsApp o Instagram?";
+        }
+      }
+    ];
 
-La confusión no es falta de capacidad.
-Es exceso de ruido sin estructura.
+    /* ================= MOTOR DE RESPUESTA ================= */
 
-Eso significa que ahora mismo necesitas:
-✔ Claridad
-✔ Prioridades
-✔ Dirección concreta
+    function getResponse(message) {
+      const text = message.toLowerCase();
 
-No más ideas.
-No más teoría.
-
-Sistema.
-
-${triggers.diagnostico.starter}
-`;
-    }
-    if (text.includes("bloqueo")) {
-      state.nivelDetectado = "starter";
-      state.etapa = "recomendacion";
-      return `
-Gracias por decirlo 👑  
-
-El bloqueo casi nunca es pereza.
-Es saturación sin estructura.
-
-Eso significa que ahora necesitas:
-✔ Orden mental
-✔ Enfoque claro
-✔ Dirección accionable
-
-No presión.
-No más información.
-
-Sistema.
-
-${triggers.diagnostico.starter}
-`;
-    }
-    if (text.includes("exceso")) {
-      state.nivelDetectado = "starter";
-      state.etapa = "recomendacion";
-      return `
-Tiene todo el sentido 👑  
-
-El exceso de ideas no es problema creativo.
-Es problema de jerarquía.
-
-Eso significa que ahora necesitas:
-✔ Prioridades claras
-✔ Dirección estratégica
-✔ Enfoque real
-
-No más ideas.
-No más estímulos.
-
-Sistema.
-
-${triggers.diagnostico.starter}
-`;
-    }
-  }
-
-  // FLUJO 2 — CREAR ALGO VENDIBLE
-  if (state.flujo === "flujo2" && state.etapa === "diagnostico") {
-    if (text.includes("ya") || text.includes("tengo") || text.includes("en marcha")) {
-      state.nivelDetectado = "pro";
-      state.etapa = "recomendacion";
-      return `
-Buenísimo 👑  
-
-Si ya tienes algo en marcha,
-tu cuello de botella no es creatividad.
-
-Es:
-✔ Sistema
-✔ Mensaje
-✔ Conversión
-✔ Estructura
-
-Eso significa que ahora necesitas orden comercial,
-no más ideas.
-
-${triggers.diagnostico.pro}
-`;
-    }
-    if (text.includes("no") || text.includes("todavía") || text.includes("aún")) {
-      state.nivelDetectado = "starter";
-      state.etapa = "recomendacion";
-      return `
-Perfecto 👑  
-
-Si aún no tienes nada concreto,
-lo inteligente no es vender rápido.
-
-Es:
-✔ Ordenar primero
-✔ Definir bien
-✔ Construir con criterio
-
-Eso te ahorra tiempo, frustración y desgaste.
-
-${triggers.diagnostico.starter}
-`;
-    }
-  }
-
-  // DESPUÉS DE RECOMENDACIÓN — MANTENER CONTEXTO
-  if (state.etapa === "recomendacion") {
-    if (text.includes("como") || text.includes("cómo") || text.includes("funciona") || text.includes("empezamos")) {
-      return `
+      // DESPUÉS DE RECOMENDACIÓN — MANTENER CONTEXTO
+      if (state.etapa === "recomendacion") {
+        if (text.includes("como") || text.includes("cómo") || text.includes("funciona") || text.includes("empezamos")) {
+          return `
 Buenísima pregunta 👑  
-
 Lo importante ahora no es el plan,
 es cómo empezamos contigo realmente.
-
 El proceso suele ser:
-
 1️⃣ Diagnóstico humano profundo  
 2️⃣ Orden mental y estratégico  
 3️⃣ Diseño de estructura mínima viable  
@@ -1615,126 +250,99 @@ Construimos contigo.
 
 Si quieres, dime:
 👉 ¿Prefieres avanzar paso a paso o ver primero el panorama completo? 👀
-`;
-    }
-    if (text.includes("si") || text.includes("sí") || text.includes("dale") || text.includes("ok")) {
-      return `
+          `.trim();
+        }
+        if (text.includes("si") || text.includes("sí") || text.includes("dale") || text.includes("ok")) {
+          return `
 Perfecto 👑  
-
 Entonces empezamos así:
-
 Primero te hago unas preguntas cortas
 para entender bien tu punto actual,
 y desde ahí construimos contigo.
 
 Dime:
 👉 ¿Hoy estás más enfocado en ti como persona o en tu proyecto como negocio? 👀
-`;
-    }
-  }
+          `.trim();
+        }
+      }
 
-  // FLUJO 3 — CONTACTO HUMANO
-  if (state.flujo === "flujo3") {
-    if (text.includes("whatsapp")) {
-      return `
+      // FLUJO 3 — CONTACTO HUMANO
+      if (state.flujo === "flujo3") {
+        if (text.includes("whatsapp")) {
+          return `
 Perfecto 👑  
-
 Aquí tienes acceso directo a una persona real:
-
 📲 WhatsApp:
 👉 https://wa.me/573016625921  
-
 (Escríbenos y seguimos contigo sin bots.)
-
 ¿Quieres que mientras tanto sigamos conversando aquí? 👀
-`;
-    }
-    if (text.includes("instagram")) {
-      return `
+          `.trim();
+        }
+        if (text.includes("instagram")) {
+          return `
 Perfecto 👑  
-
 Aquí puedes escribirnos directo:
-
 📲 Instagram:
 👉 https://instagram.com/maxiqueenos  
-
 ¿Quieres que mientras tanto sigamos conversando aquí? 👀
-`;
+          `.trim();
+        }
+      }
+
+      // 2️⃣ INTENTS NORMALES — BASE
+      for (const intent of intents) {
+        if (intent.keywords.some(k => text.includes(k))) {
+          return intent.response();
+        }
+      }
+
+      // Default
+      state.etapa = "recomendacion";
+      return "Entiendo 👑\nCuéntame un poco más qué estás buscando lograr ahora mismo.";
     }
-  }
 
-  return null;
-}
+    /* ================= UI ================= */
 
-/* =========================
-   🎯 RESPUESTA PRINCIPAL
-========================= */
-function getResponse(message){
-  const text = message.toLowerCase();
+    function openLegal(type) {
+      const pages = {
+        privacy: "privacidad.html",
+        cookies: "cookies.html",
+        terms: "terminos.html"
+      };
 
-  // 1️⃣ CONTEXTO PRIMERO
-  const contextual = contextualResponse(text);
-  if (contextual) return contextual;
-
-  // 2️⃣ INTENTS NORMALES
-  for(const intent of intents){
-    if(intent.keywords.some(k => text.includes(k))){
-      return intent.response();
+      const url = pages[type];
+      if (url) window.open(url, "_blank");
     }
-  }
 
-  // 3️⃣ FALLBACK INTELIGENTE (NO GENÉRICO)
-  return `
-Te leo 👀  
+    function sendMessage() {
+      const message = input.value.trim();
+      if (!message) return;
+      appendMessage("user", message);
+      input.value = "";
+      setTimeout(() => {
+        const response = getResponse(message);
+        appendMessage("bot", response);
+      }, 200);
+    }
 
-No quiero responderte como bot.
-Quiero entenderte bien.
+    input.addEventListener("keydown", e => {
+      if (e.key === "Enter") sendMessage();
+    });
 
-¿Me cuentas un poco mejor qué tienes en mente ahora mismo? 👑
-`;
-}
+    // Mensaje inicial
+    appendMessage("bot", "Hola 👑 Soy el sistema MaxiQueen OS.\n¿Quieres explorar cómo funciona o resolver algo puntual hoy?");
+  </script>
 
-/* =========================
-   🧩 UI
-========================= */
-function appendMessage(text, sender="bot"){
-  const msg = document.createElement('div');
-  msg.textContent = text;
-  msg.style.whiteSpace = "pre-line";
-  msg.className = sender === "user"
-    ? "text-right text-amber-400 font-semibold"
-    : "text-left text-zinc-200";
-  chatLog.appendChild(msg);
-  chatLog.scrollTop = chatLog.scrollHeight;
-}
+<!--
+================ LICENSE =================
 
-function sendMessage(){
-  const message = input.value.trim();
-  if(!message) return;
-  appendMessage(message, "user");
-  input.value = "";
-  setTimeout(() => {
-    appendMessage(getResponse(message), "bot");
-  }, 200);
-}
-
-input.addEventListener("keydown", e => {
-  if(e.key === "Enter") sendMessage();
-});
-
-</script>
-
-## License
-
-MaxiQueen OS is licensed under the **Apache License 2.0**.
+MaxiQueen OS is licensed under the Apache License 2.0.
 
 You are free to use, modify, and distribute the core system, including for commercial purposes.
-However, the **MaxiQueen OS name, branding, and premium modules are protected and not included
-under this license**.
+However, the MaxiQueen OS name, branding, and premium modules are protected and not included
+under this license.
 
 See the LICENSE file for full details.
-
+-->
 </body>
 </html>
-
-
