@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<!-- saved from url=(0162)file:///C:/%F0%9F%9F%A0%202%20MAXIQUEEN%20OS%20%E2%86%92%20MARCA%20%20CONTENIDO%20%20FRONT-END/1%EF%B8%8F%E2%83%A3%F0%9F%8E%AF_Web/03_STORE/02_CATALOGO/admin.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>MAXIQUEEN Admin — Catálogo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background:#0f0f0f; color:#fff; margin:0; padding:40px; }
+    h1 { color:#FFD700; }
+    .product { background:#1a1a1a; padding:20px; border-radius:12px; margin-bottom:20px; }
+    input, textarea { width:100%; padding:10px; border-radius:8px; border:none; margin-top:6px; margin-bottom:12px; }
+    label { font-size:.9rem; opacity:.8; }
+    button { background:#FFD700; color:#000; border:none; padding:10px 18px; border-radius:10px; font-weight:bold; cursor:pointer; margin-right:10px; }
+    .save-box { margin-top:30px; background:#111; padding:20px; border-radius:12px; }
+    pre { background:#000; padding:20px; border-radius:10px; overflow:auto; }
+  </style>
+</head>
+<body>
+
+<h1>👑 MAXIQUEEN Admin — Catálogo</h1>
+<p>Edita tus productos y luego copia el JSON generado y pégalo en <code>data/productos.json</code>.</p>
+
+<div id="products"><div class="product">
+      <label>ID</label>
+      <input value="mq-os-inicial" oninput="productos[0].id=this.value; update()">
+
+      <label>Nombre</label>
+      <input value="Acceso MAXIQUEEN OS Inicial" oninput="productos[0].nombre=this.value; update()">
+
+      <label>Precio</label>
+      <input type="number" value="49000" oninput="productos[0].precio=this.value; update()">
+
+      <label>Moneda</label>
+      <input value="COP" oninput="productos[0].moneda=this.value; update()">
+
+      <label>Descripción</label>
+      <textarea rows="3" oninput="productos[0].descripcion=this.value; update()">Entrada al sistema MAXIQUEEN OS. Incluye onboarding, recursos base y acceso inicial.</textarea>
+
+      <label>Link de pago</label>
+      <input value="https://link.mercadopago.com.co/maxiqueenos" oninput="productos[0].link_pago=this.value; update()">
+
+      <label>
+        <input type="checkbox" checked="" onchange="productos[0].activo=this.checked; update()">
+        Producto activo
+      </label>
+
+      <button onclick="removeProduct(0)">🗑 Eliminar</button>
+    </div><div class="product">
+      <label>ID</label>
+      <input value="mq-auditoria" oninput="productos[1].id=this.value; update()">
+
+      <label>Nombre</label>
+      <input value="Auditoría Digital" oninput="productos[1].nombre=this.value; update()">
+
+      <label>Precio</label>
+      <input type="number" value="99000" oninput="productos[1].precio=this.value; update()">
+
+      <label>Moneda</label>
+      <input value="COP" oninput="productos[1].moneda=this.value; update()">
+
+      <label>Descripción</label>
+      <textarea rows="3" oninput="productos[1].descripcion=this.value; update()">Revisión completa de tu presencia digital, marca, funnels y oportunidades.</textarea>
+
+      <label>Link de pago</label>
+      <input value="https://link.mercadopago.com.co/maxiqueenos" oninput="productos[1].link_pago=this.value; update()">
+
+      <label>
+        <input type="checkbox" checked="" onchange="productos[1].activo=this.checked; update()">
+        Producto activo
+      </label>
+
+      <button onclick="removeProduct(1)">🗑 Eliminar</button>
+    </div><div class="product">
+      <label>ID</label>
+      <input value="nuevo-producto" oninput="productos[2].id=this.value; update()">
+
+      <label>Nombre</label>
+      <input value="Nuevo producto" oninput="productos[2].nombre=this.value; update()">
+
+      <label>Precio</label>
+      <input type="number" value="0" oninput="productos[2].precio=this.value; update()">
+
+      <label>Moneda</label>
+      <input value="COP" oninput="productos[2].moneda=this.value; update()">
+
+      <label>Descripción</label>
+      <textarea rows="3" oninput="productos[2].descripcion=this.value; update()"></textarea>
+
+      <label>Link de pago</label>
+      <input value="" oninput="productos[2].link_pago=this.value; update()">
+
+      <label>
+        <input type="checkbox" checked="" onchange="productos[2].activo=this.checked; update()">
+        Producto activo
+      </label>
+
+      <button onclick="removeProduct(2)">🗑 Eliminar</button>
+    </div></div>
+
+<button onclick="addProduct()">➕ Agregar producto</button>
+
+<div class="save-box">
+  <h3>📄 JSON Actualizado</h3>
+  <p>Copia este contenido y pégalo en <code>data/productos.json</code>:</p>
+  <pre id="output">[
+  {
+    "id": "mq-os-inicial",
+    "nombre": "Acceso MAXIQUEEN OS Inicial",
+    "precio": 49000,
+    "moneda": "COP",
+    "descripcion": "Entrada al sistema MAXIQUEEN OS. Incluye onboarding, recursos base y acceso inicial.",
+    "link_pago": "https://link.mercadopago.com.co/maxiqueenos",
+    "activo": true
+  },
+  {
+    "id": "mq-auditoria",
+    "nombre": "Auditoría Digital",
+    "precio": 99000,
+    "moneda": "COP",
+    "descripcion": "Revisión completa de tu presencia digital, marca, funnels y oportunidades.",
+    "link_pago": "https://link.mercadopago.com.co/maxiqueenos",
+    "activo": true
+  },
+  {
+    "id": "nuevo-producto",
+    "nombre": "Nuevo producto",
+    "precio": 0,
+    "moneda": "COP",
+    "descripcion": "",
+    "link_pago": "",
+    "activo": true
+  }
+]</pre>
+</div>
+
+<script>
+let productos = [
+  {
+    id: "mq-os-inicial",
+    nombre: "Acceso MAXIQUEEN OS Inicial",
+    precio: 49000,
+    moneda: "COP",
+    descripcion: "Entrada al sistema MAXIQUEEN OS. Incluye onboarding, recursos base y acceso inicial.",
+    link_pago: "https://link.mercadopago.com.co/maxiqueenos",
+    activo: true
+  },
+  {
+    id: "mq-auditoria",
+    nombre: "Auditoría Digital",
+    precio: 99000,
+    moneda: "COP",
+    descripcion: "Revisión completa de tu presencia digital, marca, funnels y oportunidades.",
+    link_pago: "https://link.mercadopago.com.co/maxiqueenos",
+    activo: true
+  }
+];
+
+function render() {
+  const container = document.getElementById('products');
+  container.innerHTML = '';
+  productos.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'product';
+    div.innerHTML = `
+      <label>ID</label>
+      <input value="${p.id}" oninput="productos[${i}].id=this.value; update()">
+
+      <label>Nombre</label>
+      <input value="${p.nombre}" oninput="productos[${i}].nombre=this.value; update()">
+
+      <label>Precio</label>
+      <input type="number" value="${p.precio}" oninput="productos[${i}].precio=this.value; update()">
+
+      <label>Moneda</label>
+      <input value="${p.moneda}" oninput="productos[${i}].moneda=this.value; update()">
+
+      <label>Descripción</label>
+      <textarea rows="3" oninput="productos[${i}].descripcion=this.value; update()">${p.descripcion}</textarea>
+
+      <label>Link de pago</label>
+      <input value="${p.link_pago}" oninput="productos[${i}].link_pago=this.value; update()">
+
+      <label>
+        <input type="checkbox" ${p.activo ? 'checked' : ''} onchange="productos[${i}].activo=this.checked; update()">
+        Producto activo
+      </label>
+
+      <button onclick="removeProduct(${i})">🗑 Eliminar</button>
+    `;
+    container.appendChild(div);
+  });
+  update();
+}
+
+function update() {
+  document.getElementById('output').textContent = JSON.stringify(productos, null, 2);
+}
+
+function addProduct() {
+  productos.push({
+    id: "nuevo-producto",
+    nombre: "Nuevo producto",
+    precio: 0,
+    moneda: "COP",
+    descripcion: "",
+    link_pago: "",
+    activo: true
+  });
+  render();
+}
+
+function removeProduct(index) {
+  productos.splice(index, 1);
+  render();
+}
+
+render();
+</script>
+
+
+
+</body></html>
