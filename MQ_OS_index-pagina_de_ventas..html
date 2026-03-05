@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAXIQUEEN STORE | Sistema Comercial</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Montserrat',sans-serif}
+    body{background:#0f0f0f;color:#fff;line-height:1.6;transition:.4s}
+    body.light{background:#f7f7f7;color:#111}
+
+    :root{
+      --gold:#FFD700;
+      --green:#25D366;
+      --dark:#0f0f0f;
+      --gray:#1a1a1a;
+    }
+
+    header{background:#000;padding:16px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+    header h1{color:var(--gold);font-size:1.8rem}
+    nav a{color:#fff;text-decoration:none;margin-left:20px;font-weight:600}
+    nav a:hover{color:var(--gold)}
+
+    body.light header{background:#fff;border-bottom:1px solid #ddd}
+    body.light nav a{color:#111}
+
+    .toggle{cursor:pointer;background:var(--gold);color:#000;padding:6px 12px;border-radius:20px;font-size:.8rem;font-weight:700}
+
+    .hero{min-height:90vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 20px;background:radial-gradient(circle at top,#222,#000)}
+    body.light .hero{background:linear-gradient(135deg,#fff,#eee)}
+    .hero img{width:130px;border-radius:50%;margin-bottom:24px;box-shadow:0 0 40px rgba(255,215,0,.5)}
+    .hero h2{font-size:3rem;color:var(--gold);margin-bottom:16px}
+    .hero p{max-width:600px;margin:auto;margin-bottom:30px;font-size:1.2rem}
+    .btn-primary{background:var(--gold);color:#000;padding:14px 28px;border-radius:12px;font-weight:800;text-decoration:none;transition:.3s}
+    .btn-primary:hover{background:#ffb700}
+
+    section{padding:80px 20px}
+    .container{max-width:1200px;margin:auto}
+    h3.section-title{text-align:center;font-size:2.4rem;color:var(--gold);margin-bottom:50px}
+
+    .benefits{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:30px;text-align:center}
+    .benefit{background:var(--gray);padding:30px;border-radius:16px;transition:.3s}
+    .benefit:hover{transform:translateY(-6px)}
+    body.light .benefit{background:#fff;border:1px solid #ddd}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:32px}
+    .card{background:var(--gray);padding:24px;border-radius:18px;text-align:center;transition:.3s;position:relative}
+    .card:hover{transform:translateY(-6px)}
+    body.light .card{background:#fff;border:1px solid #ddd}
+    .card img{width:100%;border-radius:12px;margin-bottom:16px}
+    .price{color:var(--gold);font-weight:700;margin-bottom:12px}
+    .btn-whatsapp{display:inline-block;background:var(--green);color:#fff;padding:10px 20px;border-radius:10px;font-weight:800;text-decoration:none}
+    .btn-whatsapp:hover{background:#128c53}
+
+    .testimonials{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:30px}
+    .testimonial{background:var(--gray);padding:24px;border-radius:16px}
+    body.light .testimonial{background:#fff;border:1px solid #ddd}
+
+    .steps{max-width:700px;margin:auto;text-align:left;font-size:1.1rem}
+    .steps li{margin-bottom:12px}
+
+    .cta{background:linear-gradient(135deg,#FFD700,#ffb700);color:#000;text-align:center;padding:70px 20px;border-radius:24px;max-width:1100px;margin:auto}
+
+    footer{text-align:center;padding:40px 20px;background:#000}
+    body.light footer{background:#fff;border-top:1px solid #ddd}
+
+    .whatsapp-float{position:fixed;bottom:20px;right:20px;background:var(--green);color:#fff;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:900;z-index:1000;text-decoration:none;box-shadow:0 0 20px rgba(37,211,102,.6)}
+
+    body.light .hero p, body.light p{color:#333}
+
+    .tiktok-bar{background:#000;color:#fff;text-align:center;padding:12px;font-weight:700;font-size:.95rem}
+    .tiktok-bar a{color:var(--gold);text-decoration:none;margin-left:6px}
+  </style>
+</head>
+<body>
+
+  <div class="tiktok-bar">
+    🔥 Compra directa por WhatsApp — Atención inmediata
+    <a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN.%20Vengo%20desde%20TikTok%20y%20quiero%20comprar" target="_blank">Pedir ahora</a>
+  </div>
+
+  <header>
+    <h1>MAXIQUEEN STORE</h1>
+    <nav>
+      <a href="#hero">Inicio</a>
+      <a href="#catalog">Catálogo</a>
+      <a href="#testimonials">Testimonios</a>
+      <a href="#how">Cómo comprar</a>
+      <a href="#contact">Contacto</a>
+      <span class="toggle" onclick="toggleMode()">🌙 / ☀️</span>
+    </nav>
+  </header>
+
+  <section class="hero" id="hero">
+    <div class="container">
+      <img src="assets/logo.png" alt="MAXIQUEEN" />
+      <h2>Compra fácil. Recibe rápido. Paga seguro.</h2>
+      <p>Productos virales, moda, gadgets y soluciones reales — atención humana directa por WhatsApp.</p>
+      <a class="btn-primary" href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN.%20Vengo%20desde%20la%20p%C3%A1gina%20y%20quiero%20comprar" target="_blank">Comprar ahora por WhatsApp</a>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h3 class="section-title">¿Por qué comprar en MAXIQUEEN?</h3>
+      <div class="benefits">
+        <div class="benefit">⚡ Compra directa sin formularios</div>
+        <div class="benefit">🚚 Envíos rápidos a tu casa</div>
+        <div class="benefit">💬 Atención humana real</div>
+        <div class="benefit">🔥 Productos virales y útiles</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="catalog">
+    <div class="container">
+      <h3 class="section-title">Catálogo</h3>
+      <div class="grid" id="productGrid"></div>
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <div class="container">
+      <h3 class="section-title">Clientes Reales</h3>
+      <div class="testimonials">
+        <div class="testimonial">“Me encantó el conjunto deportivo, llegó rápido y en perfecto estado. ⭐⭐⭐⭐⭐”</div>
+        <div class="testimonial">“Excelente atención por WhatsApp, súper recomendados.” ⭐⭐⭐⭐⭐</div>
+        <div class="testimonial">“Volveré a comprar, proceso fácil y confiable.” ⭐⭐⭐⭐⭐</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="container">
+      <h3 class="section-title">Cómo comprar</h3>
+      <ol class="steps">
+        <li>Elige el producto que te guste.</li>
+        <li>Haz clic en “Comprar por WhatsApp”.</li>
+        <li>Confirma tu pedido con nuestro asesor.</li>
+        <li>Recibe en tu casa.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="cta" id="contact">
+      <h2>¿Listo para tu pedido?</h2>
+      <p>Escríbenos ahora y recibe atención inmediata.</p>
+      <a class="btn-primary" href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN.%20Quiero%20hacer%20un%20pedido" target="_blank">Hablar por WhatsApp</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 MAXIQUEEN STORE — Sistema Comercial MaxiQueen OS</p>
+    <p>
+      <a href="https://www.instagram.com/maxiqueen_store?igsh=MXV5eWM3azR1cWpkbA%3D%3D" target="_blank">Instagram</a> ·
+      <a href="https://www.tiktok.com/@cesarbedoya9" target="_blank">TikTok</a> ·
+      <a href="https://www.facebook.com/share/1DVm7tXTEm/" target="_blank">Facebook</a> ·
+      <a href="https://www.youtube.com/@cesarbedoya2288" target="_blank">YouTube</a>
+    </p>
+  </footer>
+
+  <a class="whatsapp-float" href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN.%20Vengo%20desde%20el%20bot%C3%B3n%20flotante%20y%20quiero%20comprar" target="_blank">💬</a>
+
+  <script>
+    const products = [
+      {
+        name: 'Auriculares inalámbricos',
+        price: '$35.000 COP',
+        img: 'assets/auriculares.jpg',
+        link: 'https://wa.me/573016625921?text=Hola%20MAXIQUEEN.%20Quiero%20comprar%20los%20auriculares'
+      },
+      {
+        name: 'Conjunto deportivo mujer',
+        price: '$55.000 COP',
+        img: 'assets/conjunto.jpg',
+        link: 'https://wa.me/573016625921?text=Hola%20MAXIQUEEN.%20Quiero%20comprar%20el%20conjunto%20deportivo'
+      },
+      {
+        name: 'Ventilador USB portátil',
+        price: '$25.000 COP',
+        img: 'assets/ventilador.jpg',
+        link: 'https://wa.me/573016625921?text=Hola%20MAXIQUEEN.%20Quiero%20comprar%20el%20ventilador%20USB'
+      }
+    ];
+
+    const grid = document.getElementById('productGrid');
+    products.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img src="${p.img}" alt="${p.name}">
+        <h4>${p.name}</h4>
+        <p class="price">${p.price}</p>
+        <a class="btn-whatsapp" href="${p.link}" target="_blank">Comprar por WhatsApp</a>
+      `;
+      grid.appendChild(card);
+    });
+
+    function toggleMode(){
+      document.body.classList.toggle('light');
+    }
+
+    console.log('MAXIQUEEN STORE cargado limpio');
+  </script>
+
+</body>
+</html>

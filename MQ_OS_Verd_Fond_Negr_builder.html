@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>MAXIQUEEN OS — Builder OS 👑</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+
+<style>
+:root{
+  --bg:#0b0b0f;
+  --panel:#111;
+  --accent:#FFD700;
+  --danger:#ff6b6b;
+}
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  background:var(--bg);
+  color:rgb(52, 248, 3);
+  font-family:Arial;
+}
+#sidebar{
+  width:260px;
+  background:#0b0b0b;
+  border-right:2px solid var(--accent);
+  padding:12px;
+  overflow:auto;
+}
+#sidebar h2{
+  color:var(--accent);
+  margin-top:0;
+}
+.component{
+  background:#1a1a1a;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:.2s;
+}
+.component:hover{
+  transform:translateY(-3px);
+  box-shadow:0 6px 20px rgba(0,0,0,.5);
+}
+#main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+#toolbar{
+  background:black;
+  padding:8px;
+  border-bottom:2px solid var(--accent);
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+button{
+  background:var(--accent);
+  border:none;
+  padding:6px 12px;
+  font-weight:bold;
+  cursor:pointer;
+  border-radius:6px;
+}
+button.danger{
+  background:var(--danger);
+  color:#000;
+}
+input, select{
+  padding:6px;
+  border-radius:6px;
+  border:none;
+}
+#editor{
+  flex:1;
+}
+#preview{
+  height:38%;
+  border:none;
+  border-top:2px solid var(--accent);
+}
+
+/* Version panel */
+#versionsPanel{
+  position:fixed;
+  right:0;
+  top:0;
+  width:320px;
+  height:100vh;
+  background:#0b0b0b;
+  border-left:2px solid var(--accent);
+  padding:12px;
+  overflow:auto;
+  transform:translateX(100%);
+  transition:.25s;
+  z-index:10;
+}
+#versionsPanel.open{
+  transform:translateX(0);
+}
+.version{
+  background:#1a1a1a;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+.version small{
+  color:#aaa;
+}
+.version button{
+  margin-top:6px;
+  width:100%;
+}
+</style>
+</head>
+
+<body>
+
+<div id="sidebar">
+  <h2>🧩 Componentes</h2>
+  <div class="component" onclick="insert(hero)">Hero</div>
+  <div class="component" onclick="insert(cta)">CTA</div>
+  <div class="component" onclick="insert(pricing)">Pricing</div>
+  <div class="component" onclick="insert(features)">Features</div>
+  <hr>
+  <h2>📂 Proyectos</h2>
+  <div id="projects"></div>
+</div>
+
+<div id="main">
+  <div id="toolbar">
+    <button onclick="run()">▶ Run</button>
+    <button onclick="saveProject()">💾 Guardar</button>
+    <button onclick="newProject()">🆕 Nuevo</button>
+    <button onclick="exportProject()">📦 Exportar HTML</button>
+    <button onclick="toggleVersions()">🕒 Versiones</button>
+    <input id="projectName" placeholder="Nombre del proyecto">
+    <select id="projectList" onchange="loadProject()"></select>
+  </div>
+  <div id="editor"></div>
+  <iframe id="preview"></iframe>
+</div>
+
+<!-- Versions Panel -->
+<div id="versionsPanel">
+  <h2 style="color:var(--accent)">🕒 Historial</h2>
+  <div id="versionsList"></div>
+  <button class="danger" onclick="clearVersions()">🧹 Borrar historial</button>
+</div>
+
+<script>
+const editor = CodeMirror(document.getElementById("editor"),{
+  mode:"htmlmixed",
+  theme:"material-darker",
+  lineNumbers:true
+});
+
+const baseTemplate = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Proyecto MAXIQUEEN</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{margin:0;font-family:Arial;background:#0e0f1a;color:#fff}
+.mq-btn{display:inline-block;padding:10px 16px;background:#FFD700;color:#000;text-decoration:none;border-radius:8px;font-weight:bold}
+</style>
+</head>
+<body>
+
+<!-- Empieza aquí -->
+
+</body>
+</html>`;
+
+/* ============================
+   COMPONENTES
+============================ */
+
+const hero = `<section style="background:linear-gradient(135deg,#1d2040,#1a1d36);padding:80px 20px;text-align:center">
+  <h1 contenteditable="true">👑 Título Principal</h1>
+  <p contenteditable="true">Subtítulo editable aquí</p>
+  <a href="#" class="mq-btn" contenteditable="true">Llamado a la acción</a>
+</section>`;
+
+const cta = `<section style="background:#FFD700;color:#000;padding:60px 20px;text-align:center;border-radius:24px">
+  <h2 contenteditable="true">¿Listo para avanzar?</h2>
+  <p contenteditable="true">Contáctanos ahora mismo</p>
+  <a href="#" class="mq-btn" contenteditable="true">Hablar ahora</a>
+</section>`;
+
+const pricing = `<section style="padding:60px 20px">
+  <h2 contenteditable="true">Planes</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px">
+    <div style="background:#1a1d36;padding:24px;border-radius:16px" contenteditable="true">
+      <h3>Starter</h3>
+      <p>$49.000 COP</p>
+      <p>Acceso inicial</p>
+    </div>
+    <div style="background:#1a1d36;padding:24px;border-radius:16px" contenteditable="true">
+      <h3>Pro</h3>
+      <p>$99.000 COP</p>
+      <p>Auditoría completa</p>
+    </div>
+  </div>
+</section>`;
+
+const features = `<section style="padding:60px 20px">
+  <h2 contenteditable="true">Beneficios</h2>
+  <ul>
+    <li contenteditable="true">⚡ Rápido</li>
+    <li contenteditable="true">🔐 Seguro</li>
+    <li contenteditable="true">🚀 Escalable</li>
+  </ul>
+</section>`;
+
+/* ============================
+   CORE FUNCTIONS
+============================ */
+
+function insert(component){
+  editor.replaceRange("\n\n"+component+"\n\n", editor.getCursor());
+  autosave();
+  run();
+}
+
+function run(){
+  document.getElementById("preview").srcdoc = editor.getValue();
+}
+
+/* ============================
+   PROJECT SYSTEM
+============================ */
+
+function getProjects(){
+  return JSON.parse(localStorage.getItem("mq-projects") || "{}");
+}
+
+function saveProjects(data){
+  localStorage.setItem("mq-projects", JSON.stringify(data));
+}
+
+function refreshProjectList(){
+  const projects = getProjects();
+  const list = document.getElementById("projectList");
+  list.innerHTML = "<option value=''>Abrir proyecto</option>";
+  for(const name in projects){
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    list.appendChild(opt);
+  }
+}
+
+function saveProject(){
+  const name = document.getElementById("projectName").value.trim();
+  if(!name){ alert("Pon un nombre al proyecto"); return; }
+
+  const projects = getProjects();
+  projects[name] = editor.getValue();
+  saveProjects(projects);
+  saveVersion(name, editor.getValue());
+  localStorage.removeItem("mq-autosave");
+  refreshProjectList();
+  alert("💾 Proyecto guardado + versión creada");
+}
+
+function loadProject(){
+  const name = document.getElementById("projectList").value;
+  if(!name) return;
+  const projects = getProjects();
+  editor.setValue(projects[name]);
+  document.getElementById("projectName").value = name;
+  run();
+}
+
+function newProject(){
+  if(confirm("¿Nuevo proyecto? Se perderán cambios no guardados.")){
+    editor.setValue(baseTemplate);
+    document.getElementById("projectName").value = "";
+    localStorage.removeItem("mq-autosave");
+    run();
+  }
+}
+
+function exportProject(){
+  const html = editor.getValue();
+  const blob = new Blob([html], {type:"text/html"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = (document.getElementById("projectName").value || "index") + ".html";
+  a.click();
+}
+
+/* ============================
+   VERSION SYSTEM
+============================ */
+
+function getVersions(){
+  return JSON.parse(localStorage.getItem("mq-versions") || "{}");
+}
+
+function saveVersions(data){
+  localStorage.setItem("mq-versions", JSON.stringify(data));
+}
+
+function saveVersion(project, code){
+  const versions = getVersions();
+  if(!versions[project]) versions[project] = [];
+  versions[project].push({
+    date: new Date().toLocaleString(),
+    code
+  });
+  saveVersions(versions);
+  refreshVersions();
+}
+
+function refreshVersions(){
+  const panel = document.getElementById("versionsList");
+  const project = document.getElementById("projectName").value;
+  const versions = getVersions()[project] || [];
+  panel.innerHTML = "";
+  versions.slice().reverse().forEach((v, i)=>{
+    const div = document.createElement("div");
+    div.className = "version";
+    div.innerHTML = `
+      <strong>Versión ${versions.length - i}</strong><br>
+      <small>${v.date}</small>
+      <button onclick="restoreVersion(${versions.length - i - 1})">♻ Restaurar</button>
+      <button onclick="exportVersion(${versions.length - i - 1})">📦 Exportar</button>
+    `;
+    panel.appendChild(div);
+  });
+}
+
+function restoreVersion(index){
+  const project = document.getElementById("projectName").value;
+  const versions = getVersions()[project];
+  if(!versions) return;
+  if(confirm("¿Restaurar esta versión?")){
+    editor.setValue(versions[index].code);
+    run();
+  }
+}
+
+function exportVersion(index){
+  const project = document.getElementById("projectName").value;
+  const versions = getVersions()[project];
+  if(!versions) return;
+  const blob = new Blob([versions[index].code], {type:"text/html"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = project + "-v" + (index+1) + ".html";
+  a.click();
+}
+
+function clearVersions(){
+  const project = document.getElementById("projectName").value;
+  if(!project) return;
+  if(confirm("¿Borrar todo el historial de versiones de este proyecto?")){
+    const versions = getVersions();
+    delete versions[project];
+    saveVersions(versions);
+    refreshVersions();
+  }
+}
+
+function toggleVersions(){
+  const panel = document.getElementById("versionsPanel");
+  panel.classList.toggle("open");
+  refreshVersions();
+}
+
+/* ============================
+   AUTOSAVE + RECOVERY
+============================ */
+
+function autosave(){
+  localStorage.setItem("mq-autosave", editor.getValue());
+}
+
+editor.on("change", ()=> autosave());
+
+const autosaved = localStorage.getItem("mq-autosave");
+if(autosaved){
+  if(confirm("🔁 Hay un borrador sin guardar. ¿Recuperarlo?")){
+    editor.setValue(autosaved);
+  }
+}
+
+/* ============================
+   INIT
+============================ */
+
+editor.setValue(baseTemplate);
+refreshProjectList();
+run();
+</script>
+
+</body>
+</html>

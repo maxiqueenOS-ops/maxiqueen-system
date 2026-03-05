@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QueenBlocks · MaxiQueen OS</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- HEADER / CONEXIÓN OS -->
+  <header class="mq-header">
+    <div class="mq-logo">
+      👑 MaxiQueen OS
+      <span>QueenBlocks conectado</span>
+    </div>
+
+    <button id="themeToggle">🌗 Cambiar tema</button>
+  </header>
+
+  <!-- GRID QUEENBLOCKS -->
+  <main class="grid">
+    <div class="block square active" data-id="1">⬛</div>
+    <div class="block l-shape" data-id="2">🟩</div>
+    <div class="block t-shape locked" data-id="3">🔒</div>
+  </main>
+
+  <!-- STORY PANEL -->
+  <section class="story">
+    <h2 id="chapterTitle">Capítulo 1</h2>
+    <p id="chapterText">Haz clic en un bloque para iniciar la historia.</p>
+  </section>
+
+  <!-- PANEL INTERNO (EDITOR BÁSICO) -->
+  <section class="panel">
+    <h3>QueenPanel™</h3>
+    <input id="titleInput" placeholder="Título del capítulo"/>
+    <textarea id="textInput" placeholder="Texto de la historia"></textarea>
+    <button id="saveChapter">Guardar capítulo</button>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRM Demo | MaxiQueen OS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-zinc-950 text-zinc-200 min-h-screen">
+
+  <div class="max-w-6xl mx-auto p-6">
+
+    <header class="flex justify-between items-center mb-8">
+      <h1 class="text-2xl font-bold text-amber-400">CRM Laboratorio</h1>
+      <a href="/" class="text-sm text-zinc-400 hover:text-amber-400">← Volver</a>
+    </header>
+
+    <!-- FORM -->
+    <div class="bg-zinc-900 p-6 rounded-xl shadow-lg mb-8">
+      <h2 class="text-lg font-semibold mb-4">Nuevo Cliente</h2>
+
+      <div class="grid md:grid-cols-3 gap-4">
+        <input id="name" type="text" placeholder="Nombre"
+          class="bg-zinc-800 p-3 rounded-lg outline-none focus:ring-2 focus:ring-amber-400">
+
+        <input id="email" type="email" placeholder="Email"
+          class="bg-zinc-800 p-3 rounded-lg outline-none focus:ring-2 focus:ring-amber-400">
+
+        <input id="phone" type="text" placeholder="Teléfono"
+          class="bg-zinc-800 p-3 rounded-lg outline-none focus:ring-2 focus:ring-amber-400">
+      </div>
+
+<button onclick="addOrUpdateClient()"
+        class="mt-4 bg-amber-400 text-black font-semibold px-6 py-2 rounded-lg hover:bg-amber-300">
+        Guardar Cliente
+      </button>
+    </div>
+
+    <!-- LISTA -->
+    <div class="bg-zinc-900 p-6 rounded-xl shadow-lg">
+      <h2 class="text-lg font-semibold mb-4">Clientes Registrados</h2>
+      <div id="clientList" class="space-y-4"></div>
+    </div>
+
+  </div>
+
+<script>
+let clients = JSON.parse(localStorage.getItem("mq_crm_clients")) || [];
+let editMode = null;
+
+function saveData() {
+  localStorage.setItem("mq_crm_clients", JSON.stringify(clients));
+}
+
+function renderClients() {
+  const list = document.getElementById("clientList");
+  list.innerHTML = "";
+
+  if (clients.length === 0) {
+    list.innerHTML = "<p class='text-zinc-500'>No hay clientes registrados.</p>";
+    return;
+  }
+
+  clients.forEach((client, index) => {
+    list.innerHTML += `
+      <div class="bg-zinc-800 p-4 rounded-lg flex justify-between items-center">
+        <div>
+          <p class="font-semibold">${client.name}</p>
+          <p class="text-sm text-zinc-400">${client.email}</p>
+          <p class="text-sm text-zinc-500">${client.phone}</p>
+          <span class="text-xs px-2 py-1 rounded-full 
+            ${client.status === "Lead" ? "bg-yellow-500/20 text-yellow-400" :
+              client.status === "Cliente" ? "bg-green-500/20 text-green-400" :
+              "bg-red-500/20 text-red-400"}">
+            ${client.status}
+          </span>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="editClient(${index})"
+            class="text-amber-400 hover:text-amber-300 text-sm">
+            Editar
+          </button>
+          <button onclick="deleteClient(${index})"
+            class="text-red-400 hover:text-red-300 text-sm">
+            Eliminar
+          </button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function addOrUpdateClient() {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const status = document.getElementById("status").value;
+
+  if (!name || !email) {
+    alert("Nombre y Email son obligatorios.");
+    return;
+  }
+
+  if (editMode !== null) {
+    clients[editMode] = { ...clients[editMode], name, email, phone, status };
+    editMode = null;
+  } else {
+    clients.push({
+      id: Date.now(),
+      name,
+      email,
+      phone,
+      status
+    });
+  }
+
+  saveData();
+  renderClients();
+  resetForm();
+}
+
+function editClient(index) {
+  const client = clients[index];
+  document.getElementById("name").value = client.name;
+  document.getElementById("email").value = client.email;
+  document.getElementById("phone").value = client.phone;
+  document.getElementById("status").value = client.status;
+  editMode = index;
+}
+
+function deleteClient(index) {
+  clients.splice(index, 1);
+  saveData();
+  renderClients();
+}
+
+function resetForm() {
+  document.getElementById("name").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("status").value = "Lead";
+}
+
+renderClients();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>MAXIQUEEN OS — Visual Builder 👑</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{
+  --bg:#0e0f1a;
+  --panel:#111325;
+  --accent:#FFD700;
+  --card:#1a1d36;
+  --text:#f4f6ff;
+}
+*{box-sizing:border-box;font-family:Inter,Arial}
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  background:linear-gradient(180deg,#0e0f1a,#11132a);
+  color:var(--text);
+}
+#sidebar{
+  width:260px;
+  background:#0b0c18;
+  border-right:2px solid var(--accent);
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+#sidebar h2{
+  margin:0 0 8px;
+  font-size:18px;
+  color:var(--accent);
+}
+.block{
+  background:linear-gradient(135deg,#1d2040,#1a1d36);
+  padding:12px;
+  border-radius:10px;
+  cursor:grab;
+  user-select:none;
+  font-size:14px;
+  transition:.2s;
+}
+.block:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.4)}
+#canvas-wrap{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+#topbar{
+  height:56px;
+  background:#0b0c18;
+  border-bottom:2px solid var(--accent);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 16px;
+}
+#topbar button{
+  background:var(--accent);
+  border:none;
+  padding:6px 12px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+#canvas{
+  flex:1;
+  background:#f5f6ff;
+  color:#000;
+  padding:24px;
+  overflow:auto;
+}
+.canvas-section{
+  background:white;
+  border:2px dashed #aaa;
+  border-radius:12px;
+  padding:16px;
+  margin-bottom:16px;
+  position:relative;
+}
+.canvas-section:hover{border-color:var(--accent)}
+.canvas-section.selected{outline:3px solid var(--accent)}
+.editable{
+  cursor:text;
+}
+.toolbar{
+  position:absolute;
+  top:6px;
+  right:6px;
+  display:flex;
+  gap:6px;
+}
+.toolbar button{
+  background:#000;
+  color:#fff;
+  border:none;
+  padding:4px 6px;
+  font-size:12px;
+  border-radius:6px;
+  cursor:pointer;
+}
+#inspector{
+  width:280px;
+  background:#0b0c18;
+  border-left:2px solid var(--accent);
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+#inspector h3{
+  margin-top:0;
+  color:var(--accent);
+}
+label{font-size:12px;opacity:.8}
+input, textarea{
+  width:100%;
+  background:#111325;
+  color:white;
+  border:1px solid #333;
+  border-radius:6px;
+  padding:6px;
+}
+small{opacity:.6}
+.hidden{display:none}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <h2>👑 Bloques</h2>
+  <div class="block" draggable="true" data-type="hero">🎯 Hero Section</div>
+  <div class="block" draggable="true" data-type="text">📝 Texto</div>
+  <div class="block" draggable="true" data-type="image">🖼 Imagen</div>
+  <div class="block" draggable="true" data-type="button">🔘 Botón</div>
+  <div class="block" draggable="true" data-type="card">📦 Card</div>
+  <div class="block" draggable="true" data-type="divider">➖ Divider</div>
+  <div class="block" draggable="true" data-type="spacer">⬜ Espacio</div>
+  <hr style="border:1px solid #222;width:100%">
+  <small>Arrastra bloques al canvas</small>
+</aside>
+
+<!-- MAIN -->
+<div id="canvas-wrap">
+  <div id="topbar">
+    <strong>MAXIQUEEN OS — Visual Builder</strong>
+    <button onclick="exportHTML()">📤 Export HTML</button>
+    <button onclick="clearCanvas()">🗑 Limpiar</button>
+    <button onclick="togglePreview()">👁 Preview</button>
+  </div>
+
+  <div id="canvas" ondragover="allowDrop(event)" ondrop="dropBlock(event)">
+    <p style="opacity:.5">👉 Arrastra bloques aquí para construir tu página.</p>
+  </div>
+</div>
+
+<!-- INSPECTOR -->
+<aside id="inspector">
+  <h3>🛠 Inspector</h3>
+  <div id="no-selection"><small>Selecciona un bloque para editar.</small></div>
+  <div id="editor" class="hidden">
+    <label>Contenido</label>
+    <textarea id="prop-content" rows="4"></textarea>
+
+    <label>Color de fondo</label>
+    <input type="color" id="prop-bg">
+
+    <label>Color de texto</label>
+    <input type="color" id="prop-color">
+
+    <label>Padding</label>
+    <input type="text" id="prop-padding" placeholder="16px">
+
+    <label>Border radius</label>
+    <input type="text" id="prop-radius" placeholder="12px">
+
+    <label>Link (solo botones)</label>
+    <input type="text" id="prop-link" placeholder="https://...">
+
+    <small>Los cambios se aplican en tiempo real</small>
+  </div>
+</aside>
+
+<script>
+let selected = null;
+let previewMode = false;
+
+/* ---------- DRAG ---------- */
+document.querySelectorAll('.block').forEach(block=>{
+  block.addEventListener('dragstart',e=>{
+    e.dataTransfer.setData('type',block.dataset.type);
+  });
+});
+function allowDrop(e){e.preventDefault();}
+function dropBlock(e){
+  e.preventDefault();
+  const type = e.dataTransfer.getData('type');
+  const el = createBlock(type);
+  document.getElementById('canvas').appendChild(el);
+  selectBlock(el);
+}
+
+/* ---------- BLOCK FACTORY ---------- */
+function createBlock(type){
+  const section = document.createElement('div');
+  section.className = 'canvas-section';
+  section.onclick = e => { e.stopPropagation(); selectBlock(section); };
+
+  const toolbar = document.createElement('div');
+  toolbar.className = 'toolbar';
+  toolbar.innerHTML = `
+    <button onclick="moveUp(event)">⬆</button>
+    <button onclick="moveDown(event)">⬇</button>
+    <button onclick="duplicate(event)">⧉</button>
+    <button onclick="removeBlock(event)">🗑</button>
+  `;
+  section.appendChild(toolbar);
+
+  let content;
+  switch(type){
+    case 'hero':
+      content = `<h1>👑 Título Hero</h1><p>Subtítulo potente aquí.</p><button>CTA</button>`;
+      break;
+    case 'text':
+      content = `<p>Texto editable aquí...</p>`;
+      break;
+    case 'image':
+      content = `<img src="https://placehold.co/600x300" style="max-width:100%;border-radius:12px;">`;
+      break;
+    case 'button':
+      content = `<a href="#" class="mq-btn">Botón</a>`;
+      break;
+    case 'card':
+      content = `<h3>📦 Card</h3><p>Contenido de la card</p>`;
+      break;
+    case 'divider':
+      content = `<hr>`;
+      break;
+    case 'spacer':
+      content = `<div style="height:40px"></div>`;
+      break;
+    default:
+      content = `<p>Bloque</p>`;
+  }
+
+  const inner = document.createElement('div');
+  inner.className = 'editable';
+  inner.contentEditable = true;
+  inner.innerHTML = content;
+  section.appendChild(inner);
+
+  return section;
+}
+
+/* ---------- SELECTION ---------- */
+function selectBlock(el){
+  document.querySelectorAll('.canvas-section').forEach(s=>s.classList.remove('selected'));
+  selected = el;
+  el.classList.add('selected');
+  showInspector(el);
+}
+document.getElementById('canvas').addEventListener('click',()=>{
+  clearSelection();
+});
+function clearSelection(){
+  document.querySelectorAll('.canvas-section').forEach(s=>s.classList.remove('selected'));
+  selected = null;
+  document.getElementById('editor').classList.add('hidden');
+  document.getElementById('no-selection').classList.remove('hidden');
+}
+
+/* ---------- INSPECTOR ---------- */
+function showInspector(el){
+  document.getElementById('no-selection').classList.add('hidden');
+  document.getElementById('editor').classList.remove('hidden');
+
+  const inner = el.querySelector('.editable');
+  document.getElementById('prop-content').value = inner.innerHTML;
+  document.getElementById('prop-bg').value = rgbToHex(el.style.backgroundColor || '#ffffff');
+  document.getElementById('prop-color').value = rgbToHex(el.style.color || '#000000');
+  document.getElementById('prop-padding').value = el.style.padding || '16px';
+  document.getElementById('prop-radius').value = el.style.borderRadius || '12px';
+  document.getElementById('prop-link').value = inner.querySelector('a')?.getAttribute('href') || '';
+}
+
+document.getElementById('prop-content').oninput = e=>{
+  if(!selected) return;
+  selected.querySelector('.editable').innerHTML = e.target.value;
+};
+document.getElementById('prop-bg').oninput = e=>{
+  if(!selected) return;
+  selected.style.background = e.target.value;
+};
+document.getElementById('prop-color').oninput = e=>{
+  if(!selected) return;
+  selected.style.color = e.target.value;
+};
+document.getElementById('prop-padding').oninput = e=>{
+  if(!selected) return;
+  selected.style.padding = e.target.value;
+};
+document.getElementById('prop-radius').oninput = e=>{
+  if(!selected) return;
+  selected.style.borderRadius = e.target.value;
+};
+document.getElementById('prop-link').oninput = e=>{
+  if(!selected) return;
+  const a = selected.querySelector('a');
+  if(a) a.href = e.target.value;
+};
+
+/* ---------- TOOLBAR ACTIONS ---------- */
+function removeBlock(e){
+  e.stopPropagation();
+  const section = e.target.closest('.canvas-section');
+  section.remove();
+  clearSelection();
+}
+function duplicate(e){
+  e.stopPropagation();
+  const section = e.target.closest('.canvas-section');
+  const clone = section.cloneNode(true);
+  clone.onclick = ev=>{ ev.stopPropagation(); selectBlock(clone); };
+  section.after(clone);
+}
+function moveUp(e){
+  e.stopPropagation();
+  const section = e.target.closest('.canvas-section');
+  if(section.previousElementSibling)
+    section.parentNode.insertBefore(section, section.previousElementSibling);
+}
+function moveDown(e){
+  e.stopPropagation();
+  const section = e.target.closest('.canvas-section');
+  if(section.nextElementSibling)
+    section.parentNode.insertBefore(section.nextElementSibling, section);
+}
+
+/* ---------- EXPORT ---------- */
+function exportHTML(){
+  const content = Array.from(document.querySelectorAll('.canvas-section')).map(sec=>{
+    const inner = sec.querySelector('.editable');
+    return `<section style="${sec.style.cssText}">${inner.innerHTML}</section>`;
+  }).join("\n\n");
+
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Export MAXIQUEEN OS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{margin:0;font-family:Arial;background:#0e0f1a;color:#fff}
+section{max-width:1100px;margin:0 auto 24px;padding:16px}
+.mq-btn{display:inline-block;padding:10px 16px;background:#FFD700;color:#000;text-decoration:none;border-radius:8px;font-weight:bold}
+</style>
+</head>
+<body>
+
+${content}
+
+</body>
+</html>`;
+
+  const blob = new Blob([html],{type:"text/html"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "pagina-maxiqueen.html";
+  a.click();
+}
+
+/* ---------- UTILS ---------- */
+function clearCanvas(){
+  if(!confirm("¿Borrar todo el canvas?")) return;
+  document.getElementById('canvas').innerHTML = '';
+  clearSelection();
+}
+function togglePreview(){
+  previewMode = !previewMode;
+  document.getElementById('sidebar').style.display = previewMode?'none':'flex';
+  document.getElementById('inspector').style.display = previewMode?'none':'flex';
+}
+function rgbToHex(rgb){
+  if(!rgb) return '#ffffff';
+  if(rgb.startsWith('#')) return rgb;
+  const res = rgb.match(/\d+/g);
+  if(!res) return '#ffffff';
+  return "#" + res.map(x => (+x).toString(16).padStart(2,'0')).join('');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MAXIQUEEN — Sistema de Reconstrucción Personal</title>
+  <meta name="description" content="MAXIQUEEN es un sistema de reconstrucción personal para recuperar claridad, control y dirección real. No es motivación. Es estructura y proceso."/>
+  <link rel="stylesheet" href="/MAXIQUEEN_OS/multipagina/assets/css/main.css  "/>
+  <script defer src="/MAXIQUEEN_OS/multipagina/assets/js/main.js"></script>
+  <script defer src="/MAXIQUEEN_OS/multipagina/assets/js/contact.js"></script>
+  <style>
+body { margin:0; font-family:'Arial', sans-serif; background:#050b16; color:#f5f5f5; }
+.container { display:flex; flex-direction:column; align-items:center; padding:20px; }
+.layer { border-radius:15px; padding:20px; margin:15px 0; width:95%; max-width:1200px; background: linear-gradient(145deg, #0b1d3a, #102a4f); box-shadow:0 8px 25px rgba(0,0,0,0.9); position:relative; transition: all 0.5s; }
+h2 { display:flex; align-items:center; gap:10px; margin-bottom:10px; color:#d4af37; text-shadow:0 0 6px rgba(212,175,55,0.4); }
+.layer div { margin-top:10px; background: rgba(255,255,255,0.05); padding:15px; border-radius:10px; transition: all 0.5s; }
+input { width:100%; padding:12px; border-radius:10px; border:none; margin-top:10px; font-size:16px; }
+.arrow, .curve-arrow { position:relative; margin: 20px auto; }
+.arrow { width:4px; height:50px; background:linear-gradient(to bottom, #f1c40f, #3498db); animation: pulse 1.5s infinite alternate; }
+.arrow::after { content:''; position:absolute; bottom:-10px; left:-6px; border-left:10px solid transparent; border-right:10px solid transparent; border-top:10px solid #f1c40f; }
+.curve-arrow svg { width: 100%; height:80px; overflow: visible; }
+.curve-arrow path { stroke:#f1c40f; stroke-width:3; fill:none; stroke-dasharray: 300; stroke-dashoffset: 300; animation: dash 2s infinite linear; }
+@keyframes dash { 0% { stroke-dashoffset: 300; } 50% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 300; } }
+@keyframes pulse { 50% { background: linear-gradient(to bottom, #f1c40f, #8e44ad); } 100% { background: linear-gradient(to bottom, #f1c40f, #d4af37); } }
+.state-badge { display:inline-block; padding:5px 10px; border-radius:8px; font-weight:bold; margin:2px; transition: all 0.5s; }
+.state-diagnostico { background:#f1c40f; color:black; }
+.state-estructurando { background:#3498db; color:white; }
+.state-construyendo { background:#9b59b6; color:white; }
+.state-vendiendo { background:#2ecc71; color:black; }
+.state-escalando { background:#e74c3c; color:white; }
+.logo { width:60px; height:60px; border-radius:50%; background:linear-gradient(45deg,#d4af37,#3498db); display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:20px; color:white; margin-right:10px; }
+.curve-arrow .highlight { stroke:#d4af37; stroke-width:4; stroke-dasharray: 300; stroke-dashoffset: 300; animation: dash-highlight 1.5s linear forwards; }
+@keyframes dash-highlight { 0% { stroke-dashoffset: 300; } 100% { stroke-dashoffset: 0; } }
+.document-upload { margin-top:10px; }
+.module { position:relative; padding:15px; background:rgba(255,255,255,0.05); border-radius:10px; flex:1; min-width:120px; text-align:center; cursor:pointer; transition: transform 0.3s, background 0.3s; }
+.module:hover { transform: translateY(-5px); background: linear-gradient(145deg, rgba(212,175,55,0.35), rgba(52,152,219,0.25)); }
+.module-connector { position:absolute; pointer-events:none; }
+.module-tooltip { position:absolute; background: rgba(0,0,0,0.85); color:white; padding:5px 10px; border-radius:8px; font-size:14px; pointer-events:none; opacity:0; transition: opacity 0.3s; z-index:10; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="/">MAXIQUEEN</a>
+    <div class="nav-links">
+      <a href="/MAXIQUEEN_OS/index-cargado-github V1.html">Inicio</a>
+      <a href="/MAXIQUEEN_OS/multipagina/boton de pago/checkout.html" class="mq-btn">Suscribirme</a>
+<a href="/MAXIQUEEN_OS/legal/privacy.html">Privacidad</a>
+<a href="/MAXIQUEEN_OS/legal/terms.html">Términos</a>
+<a href="/MAXIQUEEN_OS/legal/cookies.html">Cookies</a>
+<a class="btn alt" href="/MAXIQUEEN_OS/pagina de informes/index.html">🛠 informe de clientes</a>
+    </div>
+<div class="hero-glow"></div>
+<!-- HERO -->
+<header class="container" style="padding-top:64px">
+  <span class="badge">Sistema de reconstrucción personal</span>
+  <h1 class="h1" style="margin-top:12px">
+    Reconstruye tu mente.<br/>Reconstruye tu vida.
+  </h1>
+  <p class="muted" style="max-width:720px">
+    MAXIQUEEN es un sistema de reconstrucción personal diseñado para personas que:
+
+Están saturadas mentalmente
+
+Improvisan sin estructura
+
+Saben que pueden más pero están bloqueadas
+
+No es motivación.
+No es coaching.
+No es terapia.
+
+Es estructura.
+Es proceso.
+Es acompañamiento humano.
+    
+  </p>
+  <p><strong>No es motivación. No es coaching. No es terapia.</strong> Es estructura, proceso y acompañamiento humano.</p>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:12px">
+    <a class="btn" href="/MAXIQUEEN_OS/cloudAzulFebr.html"> Insertar Cloud info x boton</a>
+    <a class="btn" href="/MAXIQUEEN_OS/Cloudos.html"> Iniciar Cloud SaaS</a>
+    <a class="btn alt" href="/MAXIQUEEN_OS/02_CORE_BUSINESS/AI Operating System personalizado/IA_Ope_Sys_Per_indicaciones.htm">anotaciones de IA COMO CREARLA</a>
+    <a class="btn alt" href="/MAXIQUEEN_OS/AdmProCatalogo.html">🧠 Editor de productos</a>
+    <a class="btn alt"href="/MAXIQUEEN_OS/02_CORE_BUSINESS/NOTION BIENVENIDA/👥 Clientes/👥 Clientes d740b4a4888c4eff97be574ab5f1ffe3_all.csv">👥 Tipo de archivo CSV</a>
+    <a class="btn alt" href="/MAXIQUEEN_OS/02_CORE_BUSINESS/APPS/PAGE_ENGINE/Proyec_Pag_V4/Proyec_Pag_V4.html">🔥Proyecto de pagina V1</a>
+  </div>
+  <p class="muted" style="margin-top:10px">+300 personas en proceso · Comunidad privada · Acompañamiento humano</p>
+</header>
+
+<hr class="sep"/>
+
+<!-- PROBLEMA / ESPEJO -->
+<section class="container grid grid-2">
+  <div class="card">
+    <h2 class="h2">Si te pasa esto…</h2>
+    <ul class="muted">
+      <li>Te levantas cansado sin dirección clara.</li>
+      <li>Piensas mucho pero ejecutas poco.</li>
+      <li>Empiezas cosas y no terminas.</li>
+      <li>Sabes que puedes más, pero algo te bloquea.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2 class="h2">…no necesitas motivación</h2>
+    <p>Necesitas <strong>estructura</strong>. Un sistema que te saque del ruido mental y te devuelva control.</p>
+    <p class="muted">MAXIQUEEN existe para eso.</p>
+  </div>
+</section>
+
+<hr class="sep"/>
+
+<!-- QUÉ ES -->
+<section class="container grid grid-3">
+  <div class="card">
+    <h3 class="h3">No es</h3>
+    <p class="muted">Coaching emocional · Charlas motivacionales · Cursos sueltos · Hacks rápidos</p>
+  </div>
+  <div class="card">
+    <h3 class="h3">Es</h3>
+    <p class="muted">Sistema estructurado · Proceso progresivo · Acompañamiento humano · Reconstrucción real</p>
+  </div>
+  <div class="card">
+    <h3 class="h3">Resultado</h3>
+    <p class="muted">Claridad mental · Disciplina funcional · Dirección sostenida · Control interno</p>
+  </div>
+</section>
+
+<hr class="sep"/>
+
+<!-- CÓMO FUNCIONA -->
+<section id="como-funciona" class="container">
+  <h2 class="h2">Cómo funciona</h2>
+  <div class="grid grid-3">
+    <div class="card">
+      <span class="badge">01</span>
+      <h3 class="h3">Diagnóstico</h3>
+      <p class="muted">Mapeamos tu estado mental, hábitos y bloqueos reales.</p>
+    </div>
+    <div class="card">
+      <span class="badge">02</span>
+      <h3 class="h3">Reestructura</h3>
+      <p class="muted">Instalamos estructura diaria y reglas operativas simples.</p>
+    </div>
+    <div class="card">
+      <span class="badge">03</span>
+      <h3 class="h3">Ejecución</h3>
+      <p class="muted">Te acompañamos mientras conviertes claridad en acción sostenida.</p>
+    </div>
+  </div>
+  <div style="margin-top:16px">
+    <a class="btn" href="/MAXIQUEEN_OS/whatsappOS.html">Quiero empezar</a>
+  </div>
+</section>
+
+<hr class="sep"/>
+
+<!-- PARA QUIÉN / PARA QUIÉN NO -->
+<section class="container grid grid-2">
+  <div class="card">
+    <h3 class="h3">Es para ti si…</h3>
+    <ul class="muted">
+      <li>Quieres disciplina sin autoengaño.</li>
+      <li>Buscas estructura real, no frases.</li>
+      <li>Estás listo para incomodarte.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h3 class="h3">No es para ti si…</h3>
+    <ul class="muted">
+      <li>Buscas motivación rápida.</li>
+      <li>No quieres cambiar hábitos.</li>
+      <li>Esperas resultados sin proceso.</li>
+    </ul>
+  </div>
+</section>
+
+<hr class="sep"/>
+
+<!-- CTA FINAL -->
+<section class="container card">
+  <h2 class="h2">¿Listo para recuperar control?</h2>
+  <p class="muted">Empieza con un diagnóstico humano. Sin promesas vacías. Sin presión.</p>
+  <a class="btn" href="/MAXIQUEEN_OS/02_CORE_BUSINESS/APPS/PAGE_ENGINE/Proyec_Pag_V4/Proyec_Pag_V4.html">Ingresa tu proyecto y mejoralo <V2 class="0"></V2></a>
+</section>
+
+<!-- DIAGNÓSTICO PREMIUM -->
+<section class="container" style="margin-top:60px">
+
+  <div class="layer" style="border:1px solid rgba(212,175,55,0.4);">
+
+    <h2>🧠 Diagnóstico Estratégico Personal</h2>
+
+    <p style="opacity:0.8; max-width:700px;">
+      No es un formulario. Es el primer paso de tu reconstrucción.
+      Responde con honestidad. Nosotros analizamos. Te devolvemos estructura.
+    </p>
+
+    <form id="diagnosticoForm" style="margin-top:25px">
+
+      <label>Nombre completo</label>
+      <input type="text" name="firstname" required />
+
+      <label>Email</label>
+      <input type="email" name="email" required />
+
+      <label>¿Cuál es tu bloqueo principal ahora?</label>
+      <textarea name="message" rows="4" 
+        style="width:100%; padding:12px; border-radius:10px; border:none; margin-top:10px;"></textarea>
+
+      <button 
+        type="submit" 
+        style="margin-top:20px;
+               background:linear-gradient(45deg,#d4af37,#b8962e);
+               border:none;
+               padding:14px 28px;
+               border-radius:10px;
+               font-weight:bold;
+               cursor:pointer;
+               color:black;
+               transition:0.3s;">
+        Enviar diagnóstico
+      </button>
+
+    </form>
+
+    <p id="respuestaForm" style="margin-top:15px; opacity:0.8;"></p>
+
+  </div>
+
+</section>
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="links">
+      <a href="/MAXIQUEEN_OS/multipagina/system.html">Sistema</a>
+      <a href="/MAXIQUEEN_OS/multipagina/sistema/process.html">Proceso</a>
+      <a href="/MAXIQUEEN_OS/multipagina/sistema/community.html">Comunidad</a>
+      <a href="/MAXIQUEEN_OS/multipagina/license.html">Licencia</a>
+      <a href="/MAXIQUEEN_OS/multipagina/about.html">Origen</a>
+      <a href="/MAXIQUEEN_OS/multipagina/contact.html">Contacto</a>
+      <a href="/MAXIQUEEN_OS/licencia-maxiqueenos - copia.pdf">Licencia 2.0</a>
+      <a href="/MAXIQUEEN_OS/legal/privacy.html">Privacidad</a>
+      <a href="/MAXIQUEEN_OS/legal/cookies.html">Cookies</a>
+      <a href="/MAXIQUEEN_OS/legal/terms.html">Términos</a>
+    <small>© <span id="y"></span> MAXIQUEEN. Todos los derechos reservados.</small>
+  </div>
+</footer>
+<script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+
+</body>
+</html>

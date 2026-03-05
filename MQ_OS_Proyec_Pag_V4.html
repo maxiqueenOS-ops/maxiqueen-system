@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>MAXIQUEEN OS — Builder OS 👑</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+
+<style>
+:root{
+  --bg:#0b0b0f;
+  --panel:#111;
+  --accent:#FFD700;
+  --danger:#ff6b6b;
+}
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  background:var(--bg);
+  color:white;
+  font-family:Arial;
+  overflow:hidden;
+}
+#sidebar{
+  width:260px;
+  background:#0b0b0b;
+  border-right:2px solid var(--accent);
+  padding:12px;
+  overflow:auto;
+}
+#sidebar h2{color:var(--accent)}
+.component{
+  background:#1a1a1a;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:.2s;
+}
+.component:hover{
+  transform:translateY(-3px);
+  box-shadow:0 6px 20px rgba(0,0,0,.5);
+}
+
+#pagesPanel{
+  position:absolute;
+  left:260px;
+  top:0;
+  width:260px;
+  height:100%;
+  background:#0b0b0b;
+  border-right:2px solid var(--accent);
+  padding:12px;
+  overflow:auto;
+  transform:translateX(-100%);
+  transition:.25s ease;
+  z-index:5;
+}
+#pagesPanel.open{transform:translateX(0)}
+body.pages-open #main{
+  margin-left:260px;
+  transition:.25s ease;
+}
+
+#main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+#toolbar{
+  background:black;
+  padding:8px;
+  border-bottom:2px solid var(--accent);
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+button{
+  background:var(--accent);
+  border:none;
+  padding:6px 12px;
+  font-weight:bold;
+  cursor:pointer;
+  border-radius:6px;
+}
+button.danger{background:var(--danger)}
+input, select{
+  padding:6px;
+  border-radius:6px;
+  border:none;
+}
+
+#editor{flex:1}
+#preview{
+  height:38%;
+  border:none;
+  border-top:2px solid var(--accent);
+}
+
+/* Pages */
+.page{
+  background:#1a1a1a;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+.page.active{border:2px solid var(--accent)}
+.page button{width:100%;margin-top:6px}
+
+/* Versions */
+#versionsPanel{
+  position:fixed;
+  right:0;
+  top:0;
+  width:320px;
+  height:100%;
+  background:#0b0b0b;
+  border-left:2px solid var(--accent);
+  padding:12px;
+  overflow:auto;
+  transform:translateX(100%);
+  transition:.25s;
+}
+#versionsPanel.open{transform:translateX(0)}
+.version{
+  background:#1a1a1a;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="sidebar">
+  <h2>🧩 Componentes</h2>
+  <div class="component" onclick="insert(hero)">Hero</div>
+  <div class="component" onclick="insert(cta)">CTA</div>
+  <div class="component" onclick="insert(pricing)">Pricing</div>
+  <div class="component" onclick="insert(features)">Features</div>
+  <div class="component" onclick="insert(gallery)">Galería</div>
+  <div class="component" onclick="insert(footer)">Footer</div>
+</div>
+
+<div id="pagesPanel">
+  <h2 style="color:var(--accent)">📄 Páginas</h2>
+  <div id="pagesList"></div>
+  <button onclick="addPage()">➕ Nueva página</button>
+</div>
+
+<div id="main">
+  <div id="toolbar">
+    <button onclick="run()">▶ Run</button>
+    <button onclick="saveProject()">💾 Guardar</button>
+    <button onclick="newProject()">🆕 Nuevo</button>
+    <button onclick="exportSite()">🌐 Exportar</button>
+    <button onclick="togglePages()">📄 Páginas</button>
+    <button onclick="toggleVersions()">🕒 Versiones</button>
+
+    <select onchange="setPreviewSize(this.value)">
+      <option value="100%">🖥 Desktop</option>
+      <option value="768px">📱 Tablet</option>
+      <option value="390px">📲 Móvil</option>
+    </select>
+    <button onclick="togglePreview()">👁 Preview</button>
+
+    <input id="projectName" placeholder="Nombre proyecto">
+    <select id="projectList" onchange="loadProject()"></select>
+  </div>
+
+  <div id="editor"></div>
+  <iframe id="preview"></iframe>
+</div>
+
+<div id="versionsPanel">
+  <h2 style="color:var(--accent)">🕒 Historial</h2>
+  <div id="versionsList"></div>
+  <button class="danger" onclick="clearVersions()">🧹 Borrar</button>
+</div>
+
+<script>
+const editor = CodeMirror(document.getElementById("editor"),{
+  mode:"htmlmixed",
+  theme:"material-darker",
+  lineNumbers:true
+});
+
+/* BASE */
+const baseTemplate = (title="Página") => `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>${title}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{margin:0;font-family:Arial;background:#0e0f1a;color:#fff}
+nav{background:#000;padding:12px;display:flex;gap:12px}
+nav a{color:#FFD700;text-decoration:none;font-weight:bold}
+section{padding:60px 20px}
+.mq-btn{background:#FFD700;color:#000;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:bold}
+</style>
+</head>
+<body>
+<nav>{{NAV}}</nav>
+</body>
+</html>`;
+
+/* COMPONENTES */
+const hero = `<section style="text-align:center;background:linear-gradient(135deg,#1d2040,#1a1d36)">
+<h1 contenteditable>👑 MAXIQUEEN</h1>
+<p contenteditable>Subtítulo aquí</p>
+<a class="mq-btn" href="#" contenteditable>Empezar</a>
+</section>`;
+
+const cta = `<section style="background:#FFD700;color:#000;text-align:center;border-radius:24px">
+<h2 contenteditable>¿Listo?</h2>
+<p contenteditable>Contáctanos ahora</p>
+</section>`;
+
+const pricing = `<section><h2 contenteditable>Planes</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px">
+<div contenteditable style="background:#1a1d36;padding:20px;border-radius:16px">Starter</div>
+<div contenteditable style="background:#1a1d36;padding:20px;border-radius:16px">Pro</div>
+</div></section>`;
+
+const features = `<section><h2 contenteditable>Beneficios</h2>
+<ul>
+<li contenteditable>⚡ Rápido</li>
+<li contenteditable>🔐 Seguro</li>
+<li contenteditable>🚀 Escalable</li>
+</ul></section>`;
+
+const gallery = `<section><h2 contenteditable>Galería</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px">
+<div style="background:#333;height:120px;border-radius:12px"></div>
+<div style="background:#333;height:120px;border-radius:12px"></div>
+<div style="background:#333;height:120px;border-radius:12px"></div>
+</div></section>`;
+
+const footer = `<footer style="background:#000;padding:40px;text-align:center">
+<p contenteditable>© MAXIQUEEN OS</p>
+</footer>`;
+
+/* UTILIDADES */
+const getProjects=()=>JSON.parse(localStorage.getItem("mq-projects")||"{}");
+const saveProjects=d=>localStorage.setItem("mq-projects",JSON.stringify(d));
+const getVersions=()=>JSON.parse(localStorage.getItem("mq-versions")||"{}");
+const saveVersions=d=>localStorage.setItem("mq-versions",JSON.stringify(d));
+
+let currentProject="", currentPage="";
+
+/* CORE */
+function insert(c){
+  editor.replaceRange("\n"+c+"\n",editor.getCursor());
+  run();
+}
+function run(){
+  preview.srcdoc = renderPage(currentPage);
+}
+
+/* NAV */
+function generateNav(p){
+  const pages=getProjects()[p]?.pages||{};
+  return Object.keys(pages).map(x=>`<a href="${x}">${x.replace(".html","")}</a>`).join("");
+}
+function renderPage(p){
+  if(!currentProject||!p) return editor.getValue();
+  return getProjects()[currentProject].pages[p].replace("{{NAV}}",generateNav(currentProject));
+}
+
+/* PAGES */
+function refreshPages(){
+  pagesList.innerHTML="";
+  if(!currentProject) return;
+  const pages=getProjects()[currentProject].pages;
+  Object.keys(pages).forEach(p=>{
+    pagesList.innerHTML+=`
+    <div class="page ${p===currentPage?"active":""}">
+      <strong>${p}</strong>
+      <button onclick="switchPage('${p}')">Abrir</button>
+      <button onclick="deletePage('${p}')">Eliminar</button>
+    </div>`;
+  });
+}
+function addPage(){
+  const name=prompt("Nombre página");
+  if(!name) return;
+  const file=name.toLowerCase().replace(/\s+/g,"-")+".html";
+  const pr=getProjects();
+  pr[currentProject].pages[file]=baseTemplate(name);
+  saveProjects(pr);
+  switchPage(file);
+}
+function switchPage(p){
+  autosavePage();
+  currentPage=p;
+  editor.setValue(getProjects()[currentProject].pages[p]);
+  refreshPages();
+  run();
+  togglePages();
+}
+function deletePage(p){
+  const pr=getProjects();
+  delete pr[currentProject].pages[p];
+  saveProjects(pr);
+  refreshPages();
+}
+
+/* PROJECTS */
+function saveProject(){
+  const name=projectName.value.trim();
+  if(!name) return;
+  const pr=getProjects();
+  if(!pr[name]) pr[name]={pages:{"index.html":baseTemplate("Inicio")}};
+  currentProject=name;
+  autosavePage();
+  saveProjects(pr);
+  saveVersion(name,pr[name]);
+  refreshProjectList();
+}
+function loadProject(){
+  const name=projectList.value;
+  if(!name) return;
+  currentProject=name;
+  const pages=Object.keys(getProjects()[name].pages);
+  switchPage(pages[0]);
+}
+function newProject(){
+  editor.setValue(baseTemplate("Inicio"));
+  currentProject="";
+  currentPage="";
+}
+
+/* EXPORT */
+function exportSite(){
+  const site=getProjects()[currentProject].pages;
+  for(const f in site){
+    const blob=new Blob([site[f].replace("{{NAV}}",generateNav(currentProject))]);
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download=f;
+    a.click();
+  }
+}
+
+/* VERSIONES */
+function saveVersion(p,d){
+  const v=getVersions();
+  if(!v[p]) v[p]=[];
+  v[p].push({date:new Date().toLocaleString(),data:JSON.stringify(d)});
+  saveVersions(v);
+}
+function toggleVersions(){
+  versionsPanel.classList.toggle("open");
+}
+
+/* UI */
+function togglePages(){
+  pagesPanel.classList.toggle("open");
+  document.body.classList.toggle("pages-open");
+}
+function setPreviewSize(s){
+  preview.style.width=s;
+  preview.style.margin="0 auto";
+}
+function togglePreview(){
+  preview.style.display=preview.style.display==="none"?"block":"none";
+}
+function autosavePage(){
+  if(!currentProject||!currentPage) return;
+  const pr=getProjects();
+  pr[currentProject].pages[currentPage]=editor.getValue();
+  saveProjects(pr);
+}
+function refreshProjectList(){
+  projectList.innerHTML="<option value=''>Abrir proyecto</option>";
+  const pr=getProjects();
+  for(const p in pr){
+    projectList.innerHTML+=`<option>${p}</option>`;
+  }
+}
+
+/* INIT */
+editor.setValue(baseTemplate("Inicio"));
+refreshProjectList();
+run();
+</script>
+
+</body>
+</html>

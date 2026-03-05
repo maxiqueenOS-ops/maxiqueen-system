@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b1220">
+<meta name="color-scheme" content="dark light">
+<title>MaxiQueen OS | Sistema Digital Integral</title>
+<meta name="description" content="JavaScript es el cuerpo, Python es la mente, tú eres la conciencia. MaxiQueen OS es un sistema digital integral diseñado para convertir ideas, historias y negocios en activos digitales rentables.">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="icon" href="/static/favicon.ico">
+<!-- Tailwind CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+  <div id="registerBox">
+  <h3>Registro</h3>
+  <input id="reg_email" placeholder="Email nuevo">
+  <input id="reg_password" type="password" placeholder="Password nuevo">
+  <button onclick="register()">Registrarme</button>
+</div>
+
+  <div id="loginBox">
+  <h3>Login</h3>
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
+  <button onclick="login()">Iniciar sesión</button>
+</div>
+
+
+<script>
+
+async function register() {
+  const response = await fetch("http://127.0.0.1:8000/users/register", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      email: document.getElementById("reg_email").value,
+      password: document.getElementById("reg_password").value
+    })
+  });
+
+  const data = await response.json();
+
+  if (response.ok) {
+    localStorage.setItem("token", data.access_token);
+    location.reload();
+  } else {
+    alert("Error: " + data.detail);
+  }
+}
+
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const response = await fetch("http://127.0.0.1:8000/users/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await response.json();
+
+  if (response.ok) {
+    localStorage.setItem("token", data.access_token);
+    location.reload(); // dejamos que DOMContentLoaded controle todo
+  } else {
+    alert("Error: " + data.detail);
+  }
+}
+
+async function authFetch(url, options = {}) {
+  const token = localStorage.getItem("token");
+
+  if (!options.headers) options.headers = {};
+  options.headers["Authorization"] = "Bearer " + token;
+
+  const response = await fetch(url, options);
+
+  if (response.status === 401) {
+    localStorage.removeItem("token");
+    location.reload();
+  }
+
+  return response;
+}
+
+async function getProfile() {
+  const response = await authFetch("http://127.0.0.1:8000/users/me");
+
+  if (!response.ok) {
+    console.log("Token inválido o expirado");
+    localStorage.removeItem("token");
+    return;
+  }
+
+  const data = await response.json();
+  console.log("Perfil:", data);
+}
+
+const token = localStorage.getItem("token");
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  const token = localStorage.getItem("token");
+
+  const registerBox = document.getElementById("registerBox");
+  const loginBox = document.getElementById("loginBox");
+  const chatBox = document.getElementById("chatBox");
+  const chat = document.getElementById("chat-supremo");
+
+  if (token) {
+
+    if (registerBox) registerBox.classList.add("hidden");
+    if (loginBox) loginBox.classList.add("hidden");
+    if (chatBox) chatBox.classList.remove("hidden");
+    if (chat) chat.classList.add("cliente");
+
+  } else {
+
+    if (chatBox) chatBox.classList.add("hidden");
+
+  }
+
+});
+
+</script>
+
+<style>
+/* =====================
+   VARIABLES / TEMAS
+===================== */
+:root {
+  --accent:#facc15;
+  --bg-main:#0b1220;
+  --text-main:#d7d87b;
+  --card-bg:#0f172a;
+  --border-soft:#172b4a;
+  --btn-bg:#facc15;
+  --btn-text:#6e3838;
+  --bg-soft:rgba(0,0,0,.45);
+}
+
+[data-theme="light"] {
+  --accent:#0ff50b;
+  --bg-main:#0d1628;
+  --text-main:#70ad76;
+  --card-bg:#0f2727;
+  --border-soft:#398a46;
+  --btn-bg:#b86b13;
+  --btn-text:#1a0808;
+  --bg-soft:rgba(20, 20, 48, 0.75);
+}
+
+html,body{
+  background:
+    radial-gradient(circle at 15% 20%, rgba(250,204,21,0.08), transparent 40%),
+    radial-gradient(circle at 85% 80%, rgba(244,63,94,0.08), transparent 40%),
+    linear-gradient(180deg, #0b1220 0%, #060a14 100%);
+  color:var(--text-main)!important;
+  font-family:'Poppins',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  overflow-x:hidden;
+  transition:background .35s,color .35s;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* =====================
+   EFECTOS GENERALES
+===================== */
+.fade-in{opacity:0;transform:translateY(20px);animation:fadeIn .9s ease forwards;}
+@keyframes fadeIn{to{opacity:1;transform:translateY(0);}}
+
+.glass{
+  background:var(--bg-soft);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 10px 40px rgba(0,0,0,.25);
+}
+
+[data-theme="light"] .glass{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(0,0,0,.25);
+}
+
+/* =====================
+   ANIMACIONES
+===================== */
+@keyframes floatInfinite{
+  0%{transform:translate3d(0,0,0) rotateX(0deg) rotateY(0deg);}
+  25%{transform:translate3d(0,6px,0) rotateX(1deg) rotateY(-1deg);}
+  50%{transform:translate3d(0,-4px,0) rotateX(-1deg) rotateY(1deg);}
+  75%{transform:translate3d(0,6px,0) rotateX(1deg) rotateY(-1deg);}
+  100%{transform:translate3d(0,0,0) rotateX(0deg) rotateY(0deg);}
+}
+
+@keyframes bounce-slow{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-14px);}
+}
+.animate-bounce-slow{animation:bounce-slow 3.2s ease-in-out infinite;}
+
+@keyframes pulse-slow{
+  0%,100%{opacity:.18;}
+  50%{opacity:.35;}
+}
+.animate-pulse-slow{animation:pulse-slow 6s ease-in-out infinite;}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;}
+}
+
+/* =====================
+   HERO / LOGO
+===================== */
+.hero-avatar{
+  position:relative;
+  animation:floatInfinite 7s ease-in-out infinite;
+}
+.hero-avatar::after{
+  content:'';
+  position:absolute;
+  inset:-14px;
+  border-radius:9999px;
+  background:conic-gradient(from 0deg,#f43f5e,#f59e0b,#facc15,#22c55e,#38bdf8,#a855f7,#f43f5e);
+  filter:blur(20px);
+  opacity:.75;
+  z-index:-1;
+}
+
+/* =====================
+   GALERÍA
+===================== */
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:1.5rem;
+}
+.gallery img{
+  width:100%;
+  border-radius:1.5rem;
+  object-fit:cover;
+  transition:.35s cubic-bezier(.4,0,.2,1);
+}
+.gallery img:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 40px rgba(250,204,21,.35);
+}
+
+.toggle-theme:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.25);}
+/* =====================
+   WHATSAPP FLOAT
+===================== */
+.whatsapp-float{
+  position:fixed;
+  bottom:22px;
+  left:22px;
+  background:#25D366;
+  color:white;
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 10px 28px rgba(0,0,0,.35);
+  z-index:1000;
+  transition:.25s cubic-bezier(.4,0,.2,1);
+}
+.whatsapp-float:hover{transform:scale(1.12);}
+
+/* =====================
+   TOGGLE TEMA
+===================== */
+.toggle-theme{
+  position:fixed;
+  top:18px;
+  right:18px;
+  background:var(--bg-soft);
+  border:1px solid rgba(255,255,255,.12);
+  padding:7px 16px;
+  border-radius:999px;
+  font-size:.8rem;
+  cursor:pointer;
+  z-index:1000;
+  backdrop-filter:blur(10px);
+  transition:.25s;
+}
+.toggle-theme:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.25);}
+/* ===================== CHAT ====================== */
+.mq-chat{
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  width:360px;
+  max-height:520px;
+  display:flex;
+  flex-direction:column;
+  border-radius:22px;
+  overflow:hidden;
+  backdrop-filter:blur(25px);
+  background:linear-gradient(
+    145deg,
+    rgba(28, 28, 42, 0.9),
+    rgba(15,15,20,0.8)
+  );
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.6),
+    0 0 40px rgba(250,204,21,.15);
+  z-index:9999;
+}
+
+.mq-chat-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 16px;
+  font-weight:600;
+  background:rgba(255,255,255,0.03);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.mq-chat-controls button{
+  background:none;
+  border:none;
+  color:#ccc;
+  font-size:14px;
+  margin-left:8px;
+  cursor:pointer;
+}
+
+.mq-chat-controls button:hover{
+  color:#41c0eb;
+}
+
+.mq-chat-body{
+  flex:1;
+  padding:14px;
+  overflow-y:auto;
+  font-size:14px;
+}
+
+.mq-chat-input{
+  display:flex;
+  padding:12px;
+  border-top:1px solid rgba(255,255,255,0.05);
+}
+
+.mq-chat-input input{
+  flex:1;
+  padding:8px 10px;
+  border-radius:8px;
+  border:none;
+  background:rgba(255,255,255,0.05);
+  color:#fff;
+}
+
+.mq-chat-input button{
+  margin-left:8px;
+  padding:8px 14px;
+  border-radius:8px;
+  border:none;
+  background:#facc15;
+  color:#000;
+  font-weight:600;
+  cursor:pointer;
+}
+.chat-input button:hover{filter:brightness(1.1);}
+
+.social-icon{width:20px;height:20px;object-fit:contain;display:inline-block}
+/* =====================
+   LICENCIA BOX
+===================== */
+.mq-license-box{
+  max-width:820px;
+  margin:5rem auto 6rem;
+  padding:2.5rem 2.2rem;
+  border-radius:1.75rem;
+  background:var(--bg-soft);
+  backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.08);
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+.mq-license-box h3{
+  font-size:1.6rem;
+  font-weight:800;
+  margin-bottom:1rem;
+}
+.mq-license-box p{margin-bottom:1rem;color:#d1d5db}
+.mq-license-box ul{
+  text-align:left;
+  max-width:420px;
+  margin:1.25rem auto 1.5rem;
+  color:#e5e7eb;
+}
+.mq-license-box li{margin-bottom:.4rem;}
+.mq-license-check{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.5rem;
+  margin-bottom:1rem;
+}
+.mq-license-box button{
+  padding:.7rem 1.6rem;
+  border-radius:999px;
+  background:var(--accent);
+  color:#120834;
+  font-weight:700;
+  transition:.2s;
+}
+.mq-license-box button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+.mq-license-box button:not(:disabled):hover{
+  transform:translateY(-1px);
+  filter:brightness(1.05);
+  box-shadow:0 10px 24px rgba(250,204,21,.35);
+}
+</style>
+    <h1>-👑 MAXIQUEEN 👑-
+</h1>
+
+🗣️ 
+  <a href="/static/ChatOS.html" class="ChatOS">
+    ✅Entrar ChatOS 🤖   --   ✨
+  </a>
+
+  <a href="/static/store/MQ_OS-Store/MQ_Elegancia_Femenina.html" class="btn Elegant">
+    ✅Entrar a Elegancia femenina ✨   --    👑
+  </a>
+
+  <a href="/static/AdmProCatalogo.html" class="btn AdmPro">
+    ✅Entrar a Administración de Productos ✨   --    👑
+  </a>
+
+  <a href="/static/MQ_OS_CRMRegistroClientes.html" class="btn registroClientes">
+    ✅Entrar a Registro de Clientes 🧠
+  </a>🚦
+
+   <a href="/static/index.html" class="btn MQ-OS">
+    ✅Entrar a MaxiqueenOs ✨   --    👑
+  </a>
+
+   <a href="/static/index-vqcrm.html" class="btn MQ-OS fundador">
+    ✅Entrar a MaxiqueenOs (Fundador) ✨   --    👑
+  </a>
+
+  <a href="/static/V1indexForm_MulPag.html" class="btn MultiPage">
+     ✅Entrar a MultiPage 🚦 -- 🚦
+  </a>
+
+  <a href="/MAXIQUEEN_OS/01_BRAND_PUBLIC/index-juegoavanza.html" class="btn PaginaVentas">
+    ✅Entrar a juegos       🎯 -- 🚦
+       
+  </a>
+   <a href="/static/maxiqueen-avatar.png" target="_blank">AvatarMQ_OS-MaxiqueenOS →</a>
+
+    <a href="/MaxiQueen OS v2 estructurado y escalable/HTTP1.1 200 OK.txt" class="btn PaginaVentas">
+    ✅Entrar a Consola   🎯 -- 🚦
+       
+  </a>
+
+   <a href="/static/MQ_Creador_Run_Save_Clear.html" class="btn CreadorRun">
+    ✅Entrar a Creador Run Save Clear        🎯 -- 🚦
+       
+  </a>
+
+   <a href="/MAXIQUEEN_OS/01_BRAND_PUBLIC/game.js" class="btn PaginaVentas">
+    ✅Entrar    game js     🎯 -- 🚦
+       
+  </a>
+
+   <a href="/static/index-pagina de ventas..html" class="btn PaginaVentas">
+    ✅Entrar a ventas        🎯 -- 🚦
+       
+  </a>
+
+   <a href="/static/index-pagina de ventas..html" class="btn PaginaVentas">
+    ✅Entrar a ventas        🎯 -- 🚦
+       
+  </a>
+
+<div class="card">
+    <h2>CONTENIDO INFORMATIVO</h2>
+    <p>Evolucion de tu marca y estructura. 🎯🚦.</p>
+    <a href="/static/index-juegoavanzado.html" target="_blank">PLAY JUEGO →</a>
+    <a href="/static/ChatGPT Image 29 ene 2026, 00_08_20.png" target="_blank">Tipos de Emoji →</a>
+    <a href="/static/Pag_Dora_Modulos - copia.html" target="_blank"> Maxiqueen Modulos →</a>
+  </div>
+
+  <div class="mq-grid-bg"></div>
+<!-- ================= TOGGLE DARK/LIGHT ================= -->
+<button class="toggle-theme" onclick="toggleTheme()" aria-label="Cambiar tema">🧪 MaxiTema</button>
+
+
+<!-- ================= WHATSAPP FLOAT ================= -->
+<a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Vengo%20desde%20la%20landing%20y%20quiero%20activar%20el%20sistema."
+   target="_blank"
+   rel="noopener"
+   class="whatsapp-float"
+   aria-label="WhatsApp MaxiQueen OS">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="white" width="26" aria-hidden="true">
+    <path d="M380.9 97.1C339-3.8 211.2-34.6 119.8 19.5 34.4 71.2-8.7 180.1 20.4 272.5L0 512l245.1-64.2c95.5 27.8 196.5-16.7 247.1-104.4 43.5-75.7 32.3-173.7-25.3-246.3z"/>
+  </svg>
+</a>
+
+
+<!-- ================= PRUEBA CRM LABORATORIO ================= -->
+<section class="py-8 text-center">
+  <a href="/static/crm_demo.html" target="_blank" rel="noopener" class="text-amber-400 hover:underline font-semibold">
+    Ver demo CRM (laboratorio)
+  </a>
+  <div class="mt-3 text-xs text-zinc-400">
+    Demo / contenido en desarrollo – MaxiQueen OS
+  </div>
+  <div class="card">
+    <h2>CRM Maxiqueen OS</h2>
+    <p>Prototipo de estructura CRM en evolución.</p>
+    <a href="/static/crm_demo.html" target="_blank">Abrir demo →</a>
+    <a href="/static/Ventas.html" target="_blank">Ver Ventas →</a>
+    <a href="/static/Clientes.html" target="_blank">Ver Clientes →</a>
+  </div>
+</section>
+
+<!-- Modal legal -->
+<div id="legalModal" class="fixed inset-0 hidden bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+  <div class="bg-zinc-900 text-zinc-200 max-w-xl w-full p-6 rounded-xl shadow-xl relative">
+    <button id="closeLegal" class="absolute top-3 right-3 text-zinc-400 hover:text-red-400 text-xl">✕</button>
+    <h2 id="legalTitle" class="text-xl font-bold mb-4"></h2>
+    <div id="legalContent" class="text-sm leading-relaxed space-y-3 max-h-[60vh] overflow-y-auto"></div>
+  </div>
+</div>
+
+<!-- ================= HERO ULTRA-PRO ================= -->
+<section class="min-h-screen flex items-center justify-center text-center px-6 relative bg-[radial-gradient(circle_at_top,rgba(250,204,21,.18),transparent_60%)] overflow-hidden">
+
+  <!-- FONDO SUTIL -->
+  <div class="absolute inset-0 animate-pulse-slow opacity-20 bg-[url('/static/assets/img/MAXIQUEEN_LOGO.png')] bg-no-repeat bg-center bg-contain pointer-events-none"></div>
+
+  <div class="relative z-10 max-w-3xl fade-in">
+
+    <!-- LOGO -->
+    <div class="hero-avatar inline-block mb-2">
+      <img src="/static/assets/img/MAXIQUEEN_LOGO.png" alt="MaxiQueen OS Logo" class="w-40 md:w-48 mx-auto animate-bounce-slow" loading="eager" decoding="async">
+    </div>
+
+    <h1 class="mt-6 text-4xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-rose-400">
+      Maxiqueen OS
+      <span class="text-zinc-200 block mt-2 text-lg md:text-2xl font-semibold">
+        Convierte tu caos digital en un sistema inteligente
+      </span>
+    </h1>
+
+    <p class="mt-6 text-zinc-300 text-lg md:text-xl leading-relaxed">
+      ⚠️ MaxiQueen OS es el sistema digital humano que transforma ideas, historias y negocios
+      en activos automatizados que generan ingresos reales.
+    </p>
+
+    <div class="mt-10 flex gap-4 flex-wrap justify-center">
+      <a href="#planes"
+         class="px-10 py-4 rounded-2xl bg-gradient-to-r from-amber-400 to-rose-400 hover:scale-105 hover:brightness-110 transition-transform text-black font-bold shadow-lg">
+        Activar mi Sistema
+      </a>
+      <a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Quiero%20hablar%20con%20un%20humano."
+         target="_blank"
+         rel="noopener"
+         class="px-10 py-4 rounded-2xl border border-amber-400 text-amber-400 hover:bg-amber-400 hover:text-black transition-all font-semibold">
+        Hablar con un humano
+      </a>
+    </div>
+
+    <p class="mt-10 text-sm text-zinc-400">
+      No agencia · No plantillas · No humo · Solo sistemas reales
+    </p>
+  </div>
+</section>
+
+
+<!-- ================= FOOTER FLOATEANTE ================= -->
+<footer class="py-6 mt-12 mx-6 text-center bg-black/50 backdrop-blur-md text-zinc-300 rounded-full shadow-inner fade-in">
+  <p class="mb-2 text-lg md:text-base">
+    Sistema desarrollado por <strong>César Julio Bedoya Barragán</strong>
+  </p>
+  <p>
+    <a href="https://orcid.org/0009-0004-4946-1374"
+       target="_blank"
+       rel="noopener"
+       class="text-amber-400 hover:underline hover:text-rose-400 transition-colors">
+      ORCID: 0009-0004-4946-1374
+    </a>
+  </p>
+
+  <div class="mt-4 flex justify-center gap-4 text-sm text-zinc-400">
+  <a href="/static/privacidad.html" class="hover:text-amber-400 transition">Privacidad</a>
+  <a href="/static/cookies.html" class="hover:text-amber-400 transition">Cookies</a>
+  <a href="/static/terminos.html" class="hover:text-amber-400 transition">Términos</a>
+</div>
+
+</footer>
+
+<!-- ================= JS 3D HOVER ================= -->
+<script>
+const floatElements = document.querySelectorAll('.float-3d');
+const bgCircles = document.querySelectorAll('.background-circle');
+
+document.addEventListener('mousemove', e => {
+  const x = e.clientX / window.innerWidth - 0.5;
+  const y = e.clientY / window.innerHeight - 0.5;
+
+  floatElements.forEach(el => {
+    const depth = 18;
+    el.style.transform = `rotateY(${x * depth}deg) rotateX(${-y * depth}deg) translateZ(0)`;
+  });
+
+  bgCircles.forEach((el, i) => {
+    const factor = (i + 1) * 28;
+    el.style.transform = `translate(${x * factor}px, ${y * factor}px)`;
+  });
+});
+
+// Footer flotante con scroll (optimizado)
+const footer = document.querySelector('footer');
+let lastScrollY = 0;
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  if (Math.abs(scrollY - lastScrollY) < 4) return;
+  lastScrollY = scrollY;
+
+  const maxScroll = document.body.scrollHeight - window.innerHeight || 1;
+  const footerLift = (scrollY / maxScroll) * 26;
+
+  footer.style.transform = `translateY(-${footerLift}px)`;
+  footer.style.boxShadow = `0 ${10 + footerLift/2}px ${20 + footerLift/2}px rgba(0,0,0,0.45)`;
+});
+
+</script>
+
+<!-- ================= PROBLEMA / SOLUCIÓN ================= -->
+<section class="py-24 px-6 fade-in bg-black/40">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-14 items-center">
+
+    <div>
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">El problema</h2>
+      <ul class="space-y-3 text-zinc-300">
+        <li>❌ Tienes ideas pero no sistema</li>
+        <li>❌ Publicas pero no vendes</li>
+        <li>❌ Automatizas sin estructura</li>
+        <li>❌ Usas herramientas, pero no tienes operación</li>
+      </ul>
+    </div>
+
+    <div class="glass p-10 rounded-3xl">
+      <h3 class="text-2xl font-bold mb-4">La solución</h3>
+      <p class="text-zinc-300 mb-4">MaxiQueen OS convierte tu caos digital en:</p>
+      <ul class="space-y-3 text-zinc-300">
+        <li>✅ Contenido que conecta</li>
+        <li>✅ Plataformas que convierten</li>
+        <li>✅ Sistemas que trabajan solos</li>
+        <li>✅ Procesos que escalan</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ================= QUÉ ES ================= -->
+<section id="sistema" class="py-24 px-6 fade-in">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-14 items-center">
+
+    <div>
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">¿Qué es MaxiQueen OS?</h2>
+      <p class="text-lg text-zinc-300 mb-4">
+        MaxiQueen OS no es una marca. Es un sistema digital integral diseñado para personas reales
+        que quieren crear, vender, automatizar y crecer sin depender de soluciones fragmentadas.
+      </p>
+      <p class="text-lg text-zinc-300">No vendemos páginas. Vendemos sistemas que producen resultados.</p>
+    </div>
+
+    <div class="glass p-10 rounded-3xl">
+      <h3 class="text-xl font-semibold mb-4">🧩 Módulos del Sistema</h3>
+      <ul class="space-y-3 text-zinc-300">
+        <li>🎨 Contenido creativo (guiones, caricaturas, reels, TikTok)</li>
+        <li>📱 Crecimiento en redes sociales con narrativa real y viral</li>
+        <li>🌐 Webs, landings y tiendas listas para vender</li>
+        <li>🛒 Estructura comercial (productos, inventario, funnels)</li>
+        <li>⚙️ Automatización real (deploy, subdominios, GitHub, VPS)</li>
+        <li>🧠 Asistencia estratégica (legal básica, laboral, análisis)</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ================= TESTIMONIOS ================= -->
+<section class="py-24 px-6 fade-in bg-black/40">
+  <div class="max-w-6xl mx-auto text-center">
+    <h2 class="text-3xl md:text-4xl font-bold mb-12">Resultados reales</h2>
+
+    <div class="grid md:grid-cols-3 gap-8">
+
+      <div class="glass p-8 rounded-3xl">
+        <p class="text-zinc-300 mb-4">"Pasé de tener ideas sueltas a un sistema que vende todos los días. MaxiQueen OS me ordenó la cabeza y el negocio."</p>
+        <p class="font-semibold">— Emprendedor digital</p>
+      </div>
+
+      <div class="glass p-8 rounded-3xl">
+        <p class="text-zinc-300 mb-4">"No es marketing. Es estructura. Ahora sé exactamente qué publicar, cómo vender y cómo escalar."</p>
+        <p class="font-semibold">— Creadora de contenido</p>
+      </div>
+
+      <div class="glass p-8 rounded-3xl">
+        <p class="text-zinc-300 mb-4">"MaxiQueen OS no me dio una web. Me dio un sistema completo funcionando."</p>
+        <p class="font-semibold">— Negocio local</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= GALERÍA ================= -->
+<section class="py-24 px-6 fade-in">
+  <div class="max-w-6xl mx-auto text-center">
+    <h2 class="text-3xl md:text-4xl font-bold mb-4">Sistema en acción</h2>
+    <p class="text-zinc-400 mb-12">
+      Casos reales · Módulos · Implementaciones
+    </p>
+
+    <div class="gallery grid grid-cols-1 md:grid-cols-3 gap-6" id="dynamicGallery">
+
+      <!-- Módulo Creativo -->
+      <div class="relative cursor-pointer group rounded-3xl overflow-hidden">
+        <img src="/static/assets/img/modulo-creativo.png"
+             alt="Módulo Creativo"
+             class="rounded-3xl w-full h-full object-cover"
+             loading="lazy"
+             onclick="openLightbox(this.src)">
+      </div>
+
+      <!-- Módulo Social -->
+      <div class="relative cursor-pointer group rounded-3xl overflow-hidden">
+        <img src="/static/assets/img/modulo-social.png"
+             alt="Social Media"
+             class="rounded-3xl w-full h-full object-cover"
+             loading="lazy"
+             onclick="openLightbox(this.src)">
+      </div>
+
+      <!-- Módulo Web -->
+      <div class="relative cursor-pointer group rounded-3xl overflow-hidden">
+        <img src="/static/assets/img/modulo-web.png"
+             alt="Web & Hosting"
+             class="rounded-3xl w-full h-full object-cover"
+             loading="lazy"
+             onclick="openLightbox(this.src)">
+      </div>
+
+      <!-- Automatización -->
+      <div class="relative cursor-pointer group rounded-3xl overflow-hidden">
+        <img src="/static/assets/img/modulo-automatizacion.png"
+             alt="Automatización"
+             class="rounded-3xl w-full h-full object-cover"
+             loading="lazy"
+             onclick="openLightbox(this.src)">
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ================= LIGHTBOX ================= -->
+<div id="lightbox" class="fixed inset-0 bg-black/90 hidden items-center justify-center z-50">
+  <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl" aria-label="Cerrar">✕</button>
+  <div id="lightboxContent" class="max-w-4xl w-full px-4"></div>
+</div>
+
+<!-- ================= PLANES ================= -->
+<section id="planes" class="py-24 px-6 fade-in bg-black/40">
+  <div class="max-w-6xl mx-auto text-center">
+    <h2 class="text-3xl md:text-4xl font-bold mb-14">Activa tu Sistema</h2>
+
+    <div class="grid md:grid-cols-3 gap-10">
+
+      <div class="glass p-10 rounded-3xl hover:scale-[1.02] transition">
+        <h3 class="text-xl font-semibold mb-4">👑 Starter</h3>
+        <p class="text-zinc-300 mb-5">
+          Landing page, 5 guiones, hosting básico, onboarding
+        </p>
+        <p class="font-bold mb-6" style="color:var(--accent)">USD $49 / mes</p>
+        <a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Quiero%20activar%20el%20plan%20Starter."
+           target="_blank"
+           rel="noopener"
+           class="inline-block px-8 py-3 bg-[color:var(--accent)] hover:brightness-110 rounded-xl font-bold text-black transition">
+          Activar Starter
+        </a>
+      </div>
+
+      <div class="glass p-10 rounded-3xl scale-[1.05] ring-2 ring-yellow-400/40 hover:scale-[1.07] transition">
+        <h3 class="text-xl font-semibold mb-4">💰 Pro</h3>
+        <p class="text-zinc-300 mb-5">
+          Web completa, 15 guiones, automatización, soporte estratégico
+        </p>
+        <p class="font-bold mb-6" style="color:var(--accent)">USD $99 / mes</p>
+        <a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Quiero%20activar%20el%20plan%20Pro."
+           target="_blank"
+           rel="noopener"
+           class="inline-block px-8 py-3 bg-[color:var(--accent)] hover:brightness-110 rounded-xl font-bold text-black transition">
+          Activar Pro
+        </a>
+      </div>
+
+      <div class="glass p-10 rounded-3xl hover:scale-[1.02] transition">
+        <h3 class="text-xl font-semibold mb-4">🔵 Elite</h3>
+        <p class="text-zinc-300 mb-5">
+          Sistema completo, automatización avanzada, soporte prioritario
+        </p>
+        <p class="font-bold mb-6" style="color:var(--accent)">USD $199 / mes</p>
+        <a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Quiero%20activar%20el%20plan%20Elite."
+           target="_blank"
+           rel="noopener"
+           class="inline-block px-8 py-3 bg-[color:var(--accent)] hover:brightness-110 rounded-xl font-bold text-black transition">
+          Activar Elite
+        </a>
+      </div>
+
+    </div>
+
+    <p class="mt-10 text-sm text-zinc-400">
+      Soporte humano · Sin contratos · Cancela cuando quieras
+    </p>
+  </div>
+</section>
+
+<!-- ================= ORIGEN / AUTORIDAD ================= -->
+<section id="equipo" class="py-24 px-6 fade-in">
+  <div class="max-w-5xl mx-auto text-center">
+    <h2 class="text-3xl md:text-4xl font-bold mb-10">Origen del Sistema</h2>
+
+    <div class="glass p-10 rounded-3xl text-zinc-300 leading-relaxed">
+      <p class="mb-5">
+        <strong class="text-white">
+          MAXIQUEEN nace como un proyecto familiar y evoluciona como un sistema profesional.
+        </strong>
+      </p>
+      <p class="mb-5">
+        La identidad visual y el nombre de la marca fueron creados por mis hermanas,
+        quienes aportaron la base creativa y estética que dio origen a MAXIQUEEN.
+      </p>
+      <p class="mb-5">
+        Todo el desarrollo, arquitectura, automatización, estrategia y expansión del sistema
+        ha sido diseñado y gestionado por mí.
+      </p>
+      <p class="font-semibold text-white">
+        MAXIQUEEN OS no es una agencia: es un sistema digital original construido desde experiencia real,
+        organización del caos y ejecución humana con tecnología.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA FINAL ================= -->
+<section class="py-24 px-6 fade-in bg-black/40">
+  <div class="max-w-4xl mx-auto text-center">
+    <h2 class="text-3xl md:text-4xl font-bold mb-6">¿Listo para activar tu sistema?</h2>
+    <p class="text-zinc-300 mb-10">
+      Si estás cansado de improvisar y quieres operar con estructura real, MaxiQueen OS es para ti.
+    </p>
+
+    <a href="https://wa.me/573016625921?text=Hola%20MAXIQUEEN%20OS.%20Estoy%20listo%20para%20activar%20mi%20sistema."
+       target="_blank"
+       rel="noopener"
+       class="inline-block px-12 py-4 rounded-2xl bg-[color:var(--accent)] hover:brightness-110 text-black font-extrabold shadow-xl transition">
+      Activar ahora
+    </a>
+  </div>
+</section>
+
+<!-- ================= RECURSOS DE REFUERZO ================= -->
+<section class="py-24 px-6 bg-black/30 fade-in">
+  <div class="max-w-5xl mx-auto text-center">
+    <h3 class="text-2xl font-bold mb-10">Enlaces y Recursos</h3>
+
+    <ul class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-3xl mx-auto text-left text-zinc-300">
+      <li><a class="hover:text-amber-400 transition" href="https://app-vlc.hotmart.com/affiliate-recruiting/view/6489M103285849" target="_blank" rel="noopener">💻 Afiliados</a></li>
+      <li><a class="hover:text-amber-400 transition" href="https://go.hotmart.com/P103285828N?dp=1" target="_blank" rel="noopener">🛒 Hotmart Marketplace</a></li>
+      <li><a class="hover:text-amber-400 transition" href="https://pay.hotmart.com/P103285828N" target="_blank" rel="noopener">💳 Oferta 40% descuento</a></li>
+      <li><a class="hover:text-amber-400 transition" href="https://app.hotmart.com/membership/cesar-f9370874/community/management/15254181" target="_blank" rel="noopener">📂 Comunidad Hotmart</a></li>
+      <li><a class="hover:text-amber-400 flex items-center gap-2 transition" href="https://www.tiktok.com/@cesarbedoya9" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/TikTok_logo.svg" class="social-icon" alt=""> TikTok</a></li>
+      <li><a class="hover:text-amber-400 flex items-center gap-2 transition" href="https://www.instagram.com/maxiqueen_store?igsh=MXV5eWM3azR1cWpkbA%3D%3D" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" class="social-icon" alt=""> Instagram</a></li>
+      <li><a class="hover:text-amber-400 flex items-center gap-2 transition" href="https://www.facebook.com/share/1DVm7tXTEm/" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" class="social-icon" alt=""> Facebook</a></li>
+      <li><a class="hover:text-amber-400 flex items-center gap-2 transition" href="https://www.youtube.com/@cesarbedoya2288" target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png" class="social-icon" alt=""> YouTube</a></li>
+      <li><a class="hover:text-amber-400 flex items-center gap-2 transition" href="https://wa.me/573016625921?text=Hola%20MAXIQUEENOS.%20Vengo%20desde%20la%20página%20y%20quiero%20aplicar%20al%20PROCESO." target="_blank" rel="noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" class="social-icon" alt=""> WhatsApp</a></li>
+    </ul>
+  </div>
+</section>
+<!-- ================= LICENCIA ================= -->
+<section class="mq-license-box fade-in">
+
+  <h3>Antes de entrar al sistema</h3>
+  <p>Este sistema funciona bajo principios humanos y estructurales:</p>
+
+  <ul class="mq-rules">
+    <li>Mantener criterio humano en decisiones críticas</li>
+    <li>Respetar el Método MaxiQueen OS</li>
+    <li>No usar automatización deshumanizada</li>
+  </ul>
+
+  <label class="mq-license-check">
+    <input type="checkbox" id="acceptMQ" />
+    Acepto la
+    <a href="/static/licencia-maxiqueenos.pdf" target="_blank" rel="noopener">Licencia MaxiQueen OS</a>
+  </label>
+
+  <button id="continueMQ" disabled>
+    Entrar al sistema
+  </button>
+
+</section>
+
+  <!-- ================= CHAT FLOATING ================= -->
+<div class="mq-chat hidden" id="chatBox">
+  <div class="mq-chat-header">
+    <span>MaxiQueen OS</span>
+    <div class="mq-chat-controls">
+      <button onclick="toggleChat()">−</button>
+      <button onclick="closeChat()">✕</button>
+      <button onclick="logout()">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <div class="mq-chat-body" id="chatLog"></div>
+
+  <div class="mq-chat-input">
+  <input type="text" id="chatInput" placeholder="Escribe aquí..." />
+    <button id="sendBtn">Enviar</button>
+  </div>
+</div>
+
+<div id="chatBox" class="hidden">
+  <div id="chat-supremo" class="mq-chat">
+    <div class="mq-chat-header">
+      MaxiQueen Chat
+    </div>
+
+    <div class="mq-chat-body" id="chatMessages"></div>
+
+    <div class="mq-chat-input">
+      <input id="chatInput" placeholder="Escribe algo...">
+      <button onclick="sendMessage()">Enviar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+/* =======================
+   THEME TOGGLE
+======================= */
+function toggleTheme(){
+  const root = document.documentElement;
+  const current = root.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('mq-theme', next);
+}
+(function(){
+  const saved = localStorage.getItem('mq-theme');
+  if(saved) document.documentElement.setAttribute('data-theme', saved);
+})();
+
+/* =======================
+   LIGHTBOX
+======================= */
+const lightbox = document.getElementById('lightbox');
+const lightboxContent = document.getElementById('lightboxContent');
+
+function openLightbox(src){
+  lightboxContent.innerHTML = `<img src="${src}" class="w-full rounded-2xl shadow-xl" alt="">`;
+  lightbox.classList.remove('hidden');
+  lightbox.classList.add('flex');
+}
+function closeLightbox(){
+  lightbox.classList.add('hidden');
+  lightbox.classList.remove('flex');
+}
+lightbox.addEventListener('click', e => {
+  if(e.target === lightbox) closeLightbox();
+});
+
+
+/* =======================
+   LICENCIA CHECK
+======================= */
+const acceptMQ = document.getElementById('acceptMQ');
+const continueMQ = document.getElementById('continueMQ');
+if(acceptMQ){
+  acceptMQ.addEventListener('change', () => {
+    continueMQ.disabled = !acceptMQ.checked;
+  });
+}
+continueMQ.addEventListener('click', () => {
+  if(acceptMQ.checked){
+    // Guardar aceptación en sessionStorage
+    sessionStorage.setItem('mq-accepted-license', 'true');
+    // Aquí puedes redirigir o activar el sistema
+    alert("✅ Licencia aceptada. Entrando al sistema...");
+    // Ejemplo: mostrar chat o desbloquear contenido
+    document.getElementById('chatBox').classList.remove('hidden');    // Puedes ocultar la sección de licencia si quieres
+    document.querySelector('.mq-license-box').classList.add('hidden');
+  }
+});
+
+</script>
+
+<!-- ================= MERCADO PAGO / MAXIQUEEN OS ================= -->
+
+<!--
+## License
+
+MaxiQueen OS is licensed under the Apache License 2.0.
+
+You are free to use, modify, and distribute the core system, including for commercial purposes.
+However, the MaxiQueen OS name, branding, and premium modules are protected and not included
+under this license.
+-->
+<script type="module" src="/static/js/chat-engine.js"></script>
+<script src="/static/js/auth.js"></script>
+<script type="module" src="/static/js/chat-engine.js"></script>
+</body>
+</html>
+

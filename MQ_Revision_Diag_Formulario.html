@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MaxiQueen OS — Operator Dashboard</title>
+  <style>
+    body {margin:0; font-family:Arial, sans-serif; background:#0f0f14; color:#f5f5f5;}
+    header {background:#12121a; padding:20px; text-align:center; font-weight:bold; color:#e0b3ff;}
+    nav {display:flex; gap:12px; background:#181820; padding:10px; justify-content:center;}
+    nav a {color:#e0b3ff; text-decoration:none; font-size:14px;}
+    section {max-width:1100px; margin:auto; padding:40px 20px;}
+    .card {background:#1b1b26; padding:24px; border-radius:12px; margin-bottom:20px;}
+    .btn {display:inline-block; background:#e0b3ff; color:#0f0f14; padding:12px 18px; border-radius:8px; text-decoration:none; font-weight:bold;}
+    .progress {background:#2a2a38; border-radius:6px; overflow:hidden; height:10px;}
+    .progress div {background:#e0b3ff; height:100%; width:40%;}
+    input, textarea {width:100%; padding:10px; border-radius:6px; border:none; margin-top:8px; background:#2a2a38; color:#fff;}
+  </style>
+</head>
+<body>
+
+<header>👑 MaxiQueen OS — Operator Dashboard</header>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#onboarding">Onboarding</a>
+  <a href="#manual">Manual</a>
+  <a href="#funnels">Funnels</a>
+  <a href="#clientes">Clientes</a>
+  <a href="#certificacion">Certificación</a>
+</nav>
+
+<section id="home">
+  <div class="card">
+    <h2>Bienvenido, Operador</h2>
+    <p>No estás aquí para aprender. Estás aquí para operar.</p>
+    <div class="progress"><div></div></div>
+    <p>Progreso: 40%</p>
+    <p><strong>Siguiente acción:</strong> Completar Step 2 — Sistema</p>
+    <a class="btn" href="#onboarding">Continuar</a>
+  </div>
+</section>
+
+<section id="onboarding">
+  <div class="card">
+    <h2>Step 1 — Activación de Identidad</h2>
+    <input placeholder="Rol principal">
+    <input placeholder="Mercado objetivo">
+    <input placeholder="Objetivo mensual">
+    <textarea placeholder="Enfoque principal"></textarea>
+    <br><br>
+    <a class="btn" href="#">Guardar perfil</a>
+  </div>
+
+  <div class="card">
+    <h2>Step 2 — Entender el Sistema</h2>
+    <textarea placeholder="¿Qué problema resuelve MaxiQueen OS?"></textarea>
+    <textarea placeholder="¿Qué módulo usarías primero?"></textarea>
+    <br><br>
+    <a class="btn" href="#">Enviar respuestas</a>
+  </div>
+
+  <div class="card">
+    <h2>Step 3 — Ejecución</h2>
+    <input placeholder="URL de tu landing">
+    <input type="file">
+    <br><br>
+    <a class="btn" href="#">Validar ejecución</a>
+  </div>
+
+  <div class="card">
+    <h2>Step 4 — Monetización</h2>
+    <input placeholder="Producto principal">
+    <input placeholder="Precio">
+    <input placeholder="Oferta base">
+    <input placeholder="Cliente ideal">
+    <br><br>
+    <a class="btn" href="#">Guardar oferta</a>
+  </div>
+</section>
+
+<section id="certificacion">
+  <div class="card">
+    <h2>Step 5 — Certificación</h2>
+    <p>Checklist:</p>
+    <ul>
+      <li>☑ Landing publicada</li>
+      <li>☑ Funnel funcional</li>
+      <li>☑ Oferta definida</li>
+      <li>☑ Comprensión del sistema</li>
+      <li>☑ Ejecución validada</li>
+    </ul>
+    <a class="btn" href="#">Enviar a revisión</a>
+  </div>
+</section>
+
+<footer style="text-align:center; padding:40px; opacity:0.7;">
+  © MaxiQueen OS — Operator Network
+</footer>
+
+</body>
+</html>

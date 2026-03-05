@@ -1,0 +1,18 @@
+🎯 ¿Qué es 01_BRAND_PUBLIC?
+
+Es la cara pública del ecosistema.
+No es backend.
+No es lógica interna.
+No es laboratorio.
+
+Es lo que ve:
+
+Usuario
+
+Cliente
+
+Inversionista
+
+Comunidad
+
+Tráfico orgánico

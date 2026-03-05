@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>MaxiQueen Sandbox ULTRA PRO 👑</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- CodeMirror 5 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+
+<!-- HINTS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/html-hint.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/css-hint.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/javascript-hint.min.js"></script>
+
+<style>
+:root{
+  --bg:#0d0d0d;
+  --panel:#111;
+  --accent:#00ff88;
+}
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  background:var(--bg);
+  color:white;
+  font-family:Arial;
+}
+header{
+  background:black;
+  padding:8px;
+  border-bottom:2px solid var(--accent);
+  text-align:center;
+}
+#toolbar{
+  background:black;
+  padding:6px;
+  display:flex;
+  gap:8px;
+}
+button{
+  background:var(--accent);
+  border:none;
+  padding:6px 10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+#main{
+  flex:1;
+  display:flex;
+}
+#editors{
+  width:50%;
+  display:flex;
+  flex-direction:column;
+  border-right:2px solid var(--accent);
+}
+.tabs{
+  display:flex;
+}
+.tabs button{
+  flex:1;
+  background:#111;
+  color:white;
+}
+.tabs button.active{
+  background:var(--accent);
+  color:black;
+}
+.editor{
+  flex:1;
+}
+#preview{
+  flex:1;
+  border:none;
+}
+.hidden{
+  display:none;
+}
+</style>
+</head>
+
+<body>
+
+<header>MaxiQueen Sandbox ULTRA PRO 👑</header>
+
+<div id="toolbar">
+  <button onclick="run()">▶ Run</button>
+  <button onclick="toggleEditors()">📦 Code</button>
+  <button onclick="toggleTheme()">🌗 Theme</button>
+  <button onclick="save()">💾 Save</button>
+</div>
+
+<div id="main">
+  <div id="editors">
+    <div class="tabs">
+      <button class="active" onclick="switchTab('html')">HTML</button>
+      <button onclick="switchTab('css')">CSS</button>
+      <button onclick="switchTab('js')">JS</button>
+    </div>
+    <div id="html" class="editor"></div>
+    <div id="css" class="editor hidden"></div>
+    <div id="js" class="editor hidden"></div>
+  </div>
+  <iframe id="preview"></iframe>
+</div>
+
+<script>
+let theme = "material-darker";
+let visible = true;
+
+const editors = {
+  html: CodeMirror(document.getElementById("html"),{
+    mode:"htmlmixed", theme, lineNumbers:true, extraKeys:{"Ctrl-Space":"autocomplete"}
+  }),
+  css: CodeMirror(document.getElementById("css"),{
+    mode:"css", theme, lineNumbers:true, extraKeys:{"Ctrl-Space":"autocomplete"}
+  }),
+  js: CodeMirror(document.getElementById("js"),{
+    mode:"javascript", theme, lineNumbers:true, extraKeys:{"Ctrl-Space":"autocomplete"}
+  })
+};
+
+editors.html.setValue(`<h1>👑 MaxiQueen Towers</h1>\n<canvas id="game"></canvas>`);
+
+function switchTab(tab){
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+  event.target.classList.add("active");
+  Object.keys(editors).forEach(k=>{
+    document.getElementById(k).classList.toggle("hidden",k!==tab);
+    editors[k].refresh();
+  });
+}
+
+function run(){
+  const code = `
+  <style>${editors.css.getValue()}</style>
+  ${editors.html.getValue()}
+  <script>${editors.js.getValue()}<\/script>
+  `;
+  document.getElementById("preview").srcdoc = code;
+}
+
+function toggleEditors(){
+  visible=!visible;
+  document.getElementById("editors").style.display = visible?"flex":"none";
+}
+
+function toggleTheme(){
+  theme = theme==="material-darker"?"eclipse":"material-darker";
+  Object.values(editors).forEach(e=>e.setOption("theme",theme));
+}
+
+function save(){
+  localStorage.setItem("maxiqueen-pro",JSON.stringify(

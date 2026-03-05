@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>MAXIQUEEN OS — Page Manager 👑</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{
+  --bg:#0e0f1a;
+  --panel:#111325;
+  --accent:#FFD700;
+  --card:#1a1d36;
+  --text:#f4f6ff;
+  --muted:#9aa0c3;
+}
+*{box-sizing:border-box;font-family:Inter,Arial}
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  background:linear-gradient(180deg,#0e0f1a,#11132a);
+  color:var(--text);
+}
+#sidebar{
+  width:300px;
+  background:#0b0c18;
+  border-right:2px solid var(--accent);
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+#sidebar h2{
+  margin:0 0 8px;
+  font-size:18px;
+  color:var(--accent);
+}
+.page{
+  background:linear-gradient(135deg,#1d2040,#1a1d36);
+  padding:12px;
+  border-radius:10px;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  transition:.2s;
+}
+.page:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.page span{font-size:13px;opacity:.8}
+.page .actions button{
+  background:#000;
+  color:#fff;
+  border:none;
+  padding:4px 6px;
+  font-size:12px;
+  border-radius:6px;
+  cursor:pointer;
+  margin-left:4px;
+}
+#main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+#topbar{
+  height:56px;
+  background:#0b0c18;
+  border-bottom:2px solid var(--accent);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:0 16px;
+}
+#topbar button{
+  background:var(--accent);
+  border:none;
+  padding:6px 12px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+#viewer{
+  flex:1;
+  border:none;
+  background:white;
+}
+.hidden{display:none}
+small{opacity:.6}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <h2>📄 Páginas</h2>
+  <div id="pages"></div>
+  <button onclick="createPage()">➕ Nueva página</button>
+  <hr style="border:1px solid #222;width:100%">
+  <button onclick="exportProject()">📤 Exportar proyecto</button>
+  <button onclick="importProject()">📥 Importar proyecto</button>
+  <input type="file" id="fileInput" class="hidden" accept=".json">
+  <small>Todo se guarda localmente</small>
+</aside>
+
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <strong id="currentTitle">MAXIQUEEN OS — Page Manager</strong>
+    <button onclick="openBuilder()">🛠 Abrir en Builder</button>
+    <button onclick="preview()">👁 Preview</button>
+    <button onclick="renamePage()">✏ Renombrar</button>
+    <button onclick="deletePage()">🗑 Eliminar</button>
+  </div>
+
+  <iframe id="viewer"></iframe>
+</div>
+
+<script>
+let project = {
+  name: "Proyecto MAXIQUEEN",
+  pages: []
+};
+let currentIndex = null;
+
+/* ---------- INIT ---------- */
+load();
+render();
+
+/* ---------- STORAGE ---------- */
+function save(){
+  localStorage.setItem("maxiqueen-project", JSON.stringify(project));
+}
+function load(){
+  const data = localStorage.getItem("maxiqueen-project");
+  if(data) project = JSON.parse(data);
+  if(project.pages.length === 0){
+    project.pages.push({
+      id: crypto.randomUUID(),
+      name: "Inicio",
+      html: defaultTemplate()
+    });
+  }
+}
+
+/* ---------- UI ---------- */
+function render(){
+  const list = document.getElementById("pages");
+  list.innerHTML = "";
+  project.pages.forEach((p,i)=>{
+    const div = document.createElement("div");
+    div.className = "page";
+    div.onclick = ()=>openPage(i);
+    div.innerHTML = `
+      <div>
+        <strong>${p.name}</strong><br>
+        <span>${p.id.slice(0,6)}</span>
+      </div>
+      <div class="actions">
+        <button onclick="event.stopPropagation(); duplicatePage(${i})">⧉</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+  if(currentIndex === null && project.pages.length > 0){
+    openPage(0);
+  }
+}
+
+function openPage(i){
+  currentIndex = i;
+  const page = project.pages[i];
+  document.getElementById("currentTitle").textContent = "📄 " + page.name;
+  document.getElementById("viewer").srcdoc = page.html;
+}
+
+function createPage(){
+  const name = prompt("Nombre de la nueva página:");
+  if(!name) return;
+  project.pages.push({
+    id: crypto.randomUUID(),
+    name,
+    html: defaultTemplate()
+  });
+  save();
+  render();
+}
+
+function renamePage(){
+  if(currentIndex === null) return;
+  const name = prompt("Nuevo nombre:", project.pages[currentIndex].name);
+  if(!name) return;
+  project.pages[currentIndex].name = name;
+  save();
+  render();
+}
+
+function deletePage(){
+  if(currentIndex === null) return;
+  if(!confirm("¿Eliminar esta página?")) return;
+  project.pages.splice(currentIndex,1);
+  currentIndex = null;
+  save();
+  render();
+}
+
+function duplicatePage(i){
+  const p = project.pages[i];
+  project.pages.splice(i+1,0,{
+    id: crypto.randomUUID(),
+    name: p.name + " copia",
+    html: p.html
+  });
+  save();
+  render();
+}
+
+/* ---------- BUILDER ---------- */
+function openBuilder(){
+  if(currentIndex === null) return;
+  const page = project.pages[currentIndex];
+  const win = window.open("builder.html","builder");
+  setTimeout(()=>{
+    win.postMessage({
+      type:"LOAD_PAGE",
+      html: page.html,
+      index: currentIndex
+    },"*");
+  },800);
+}
+
+window.addEventListener("message",e=>{
+  if(e.data?.type === "SAVE_PAGE"){
+    const { html, index } = e.data;
+    project.pages[index].html = html;
+    save();
+    openPage(index);
+  }
+});
+
+/* ---------- IMPORT / EXPORT ---------- */
+function exportProject(){
+  const blob = new Blob([JSON.stringify(project,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = project.name.replace(/\s+/g,"_").toLowerCase()+".json";
+  a.click();
+}
+
+function importProject(){
+  document.getElementById("fileInput").click();
+}
+document.getElementById("fileInput").addEventListener("change",e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    project = JSON.parse(ev.target.result);
+    save();
+    render();
+  };
+  reader.readAsText(file);
+});
+
+/* ---------- PREVIEW ---------- */
+function preview(){
+  if(currentIndex === null) return;
+  const win = window.open();
+  win.document.write(project.pages[currentIndex].html);
+  win.document.close();
+}
+
+/* ---------- DEFAULT TEMPLATE ---------- */
+function defaultTemplate(){
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Nueva página</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{margin:0;font-family:Arial;background:#0e0f1a;color:#fff}
+section{max-width:1100px;margin:0 auto 24px;padding:16px}
+.mq-btn{display:inline-block;padding:10px 16px;background:#FFD700;color:#000;text-decoration:none;border-radius:8px;font-weight:bold}
+</style>
+</head>
+<body>
+
+<section>
+  <h1>👑 Nueva página MAXIQUEEN</h1>
+  <p>Edita esta página usando el Builder.</p>
+</section>
+
+</body>
+</html>`;
+}
+</script>
+
+</body>
+</html>

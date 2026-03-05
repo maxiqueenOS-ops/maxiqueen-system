@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>MaxiQueen Sandbox PRO 👑</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- CodeMirror 6 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@6.0.1/lib/codemirror.css">
+<script src="https://cdn.jsdelivr.net/npm/codemirror@6.0.1/lib/codemirror.js"></script>
+
+<style>
+:root{
+  --bg:#0d0d0d;
+  --panel:#111;
+  --accent:#00ff88;
+  --text:#fff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+header{
+  padding:10px;
+  text-align:center;
+  background:#000;
+  border-bottom:2px solid var(--accent);
+}
+header h1{margin:0;font-size:20px}
+#toolbar{
+  display:flex;
+  gap:10px;
+  padding:8px;
+  background:#000;
+}
+button{
+  background:var(--accent);
+  border:none;
+  padding:8px 12px;
+  cursor:pointer;
+  font-weight:bold;
+}
+button.secondary{
+  background:#333;
+  color:white;
+}
+#main{
+  flex:1;
+  display:flex;
+  overflow:hidden;
+}
+#editors{
+  width:50%;
+  display:flex;
+  flex-direction:column;
+  border-right:2px solid var(--accent);
+}
+.tabs{
+  display:flex;
+  cursor:grab;
+}
+.tabs button{
+  flex:1;
+  background:#111;
+  color:white;
+}
+.tabs button.active{
+  background:var(--accent);
+  color:black;
+}
+.CodeMirror{
+  height:100%;
+  font-family:monospace;
+  font-size:14px;
+  background:#0f0f0f;
+  color:#00ff88;
+}
+#preview-container{
+  flex:1;
+  position:relative;
+}
+#preview{
+  width:100%;
+  height:100%;
+  border:none;
+  background:white;
+}
+.fullscreen{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:black;
+}
+#toast{
+  position:fixed;
+  top:10px;
+  right:10px;
+  background:#00ff88;
+  color:#000;
+  padding:8px 12px;
+  border-radius:5px;
+  display:none;
+  z-index:10000;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>MaxiQueen Sandbox PRO 👑</h1>
+</header>
+
+<div id="toolbar">
+  <button onclick="run()">▶ Ejecutar</button>
+  <button onclick="toggleFull()">⛶ Pantalla completa</button>
+  <button onclick="saveProject()">💾 Guardar</button>
+  <button onclick="loadProject()">📂 Cargar</button>
+</div>
+
+<div id="main">
+  <div id="editors">
+    <div class="tabs" id="tab-container">
+      <button class="active" data-tab="html">HTML</button>
+      <button data-tab="css">CSS</button>
+      <button data-tab="js">JS</button>
+    </div>
+    <textarea id="html"><h1>👑 MaxiQueen Towers</h1>
+<canvas id="game"></canvas></textarea>
+
+    <textarea id="css">body{background:#0d0d0d;color:white;text-align:center;} canvas{background:#1a1a1a;margin:auto;display:block;}</textarea>
+
+    <textarea id="js">const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+function resizeCanvas(){
+    canvas.width=window.innerWidth*0.5;
+    canvas.height=window.innerHeight*0.5;
+    draw();
+}
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#00ff88";
+    ctx.beginPath();
+    ctx.arc(canvas.width/2,canvas.height/2,40,0,Math.PI*2);
+    ctx.fill();
+}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+</textarea>
+  </div>
+
+  <div id="preview-container">
+    <iframe id="preview"></iframe>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// === Variables ===
+const htmlEditor=document.getElementById("html");
+const cssEditor=document.getElementById("css");
+const jsEditor=document.getElementById("js");
+const preview=document.getElementById("preview");
+const editors={html:htmlEditor,css:cssEditor,js:jsEditor};
+let activeEditor="html";
+
+// === Pestañas ===
+const tabs=document.querySelectorAll(".tabs button");
+tabs.forEach(tab=>{
+  tab.addEventListener("click",e=>{
+    tabs.forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+    activeEditor=tab.dataset.tab;
+    Object.values(editors).forEach(e=>e.style.display="none");
+    editors[activeEditor].style.display="block";
+  });
+});
+
+// === Drag & Drop Tabs ===
+const tabContainer=document.getElementById("tab-container");
+let draggedTab=null;
+tabContainer.addEventListener("dragstart", e=>{ draggedTab=e.target; });
+tabContainer.addEventListener("dragover", e=>{ e.preventDefault(); });
+tabContainer.addEventListener("drop", e=>{
+  if(draggedTab && e.target.tagName==="BUTTON" && e.target!==draggedTab){
+    tabContainer.insertBefore(draggedTab,e.target.nextSibling);
+  }
+});
+
+// === Funciones ===
+function run(){
+  const code=`<!DOCTYPE html>
+<html>
+<head>
+<style>${cssEditor.value}</style>
+</head>
+<body>
+${htmlEditor.value}
+<script>${jsEditor.value}<\/script>
+</body>
+</html>`;
+  preview.srcdoc=code;
+}
+
+function toggleFull(){
+  const container=document.getElementById("preview-container");
+  container.classList.toggle("fullscreen");
+  document.getElementById("editors").style.display=container.classList.contains("fullscreen")?"none":"flex";
+}
+
+function showToast(msg){
+  const toast=document.getElementById("toast");
+  toast.textContent=msg;
+  toast.style.display="block";
+  setTimeout(()=>toast.style.display="none",2000);
+}
+
+function saveProject(){
+  const project={html:htmlEditor.value,css:cssEditor.value,js:jsEditor.value};
+  localStorage.setItem("maxiqueenProject",JSON.stringify(project));
+  showToast("Proyecto guardado ✅");
+}
+
+function loadProject(){
+  const project=JSON.parse(localStorage.getItem("maxiqueenProject"));
+  if(project){
+    htmlEditor.value=project.html;
+    cssEditor.value=project.css;
+    jsEditor.value=project.js;
+    run();
+    showToast("Proyecto cargado ✅");
+  }else showToast("No hay proyecto guardado");
+}
+
+// === Autoguardado cada 5s ===
+setInterval(saveProject,5000);
+
+// === Inicialización ===
+run();
+editors[activeEditor].style.display="block";
+
+</script>
+</body>
+</html>

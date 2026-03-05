@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>MAXIQUEEN OS — Builder Live 👑</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+
+<style>
+:root{
+  --bg:#0d0d0d;
+  --panel:#111;
+  --accent:#FFD700;
+}
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  background:var(--bg);
+  color:white;
+  font-family:Arial;
+}
+#sidebar{
+  width:260px;
+  background:#0b0b0b;
+  border-right:2px solid var(--accent);
+  padding:12px;
+  overflow:auto;
+}
+#sidebar h2{
+  color:var(--accent);
+  margin-top:0;
+}
+.component{
+  background:#1a1a1a;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+  cursor:pointer;
+  transition:.2s;
+}
+.component:hover{
+  transform:translateY(-3px);
+  box-shadow:0 6px 20px rgba(0,0,0,.5);
+}
+#main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+#toolbar{
+  background:black;
+  padding:8px;
+  border-bottom:2px solid var(--accent);
+  display:flex;
+  gap:10px;
+}
+button{
+  background:var(--accent);
+  border:none;
+  padding:6px 12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+#editor{
+  flex:1;
+}
+#preview{
+  height:45%;
+  border:none;
+  border-top:2px solid var(--accent);
+}
+</style>
+</head>
+
+<body>
+
+<div id="sidebar">
+  <h2>🧩 Componentes</h2>
+  <div class="component" onclick="insert(hero)">Hero</div>
+  <div class="component" onclick="insert(cta)">CTA</div>
+  <div class="component" onclick="insert(pricing)">Pricing</div>
+  <div class="component" onclick="insert(features)">Features</div>
+</div>
+
+<div id="main">
+  <div id="toolbar">
+    <button onclick="run()">▶ Run</button>
+    <button onclick="save()">💾 Save</button>
+    <button onclick="clearEditor()">🧹 Clear</button>
+  </div>
+  <div id="editor"></div>
+  <iframe id="preview"></iframe>
+</div>
+
+<script>
+const editor = CodeMirror(document.getElementById("editor"),{
+  mode:"htmlmixed",
+  theme:"material-darker",
+  lineNumbers:true
+});
+
+editor.setValue(`<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Proyecto MAXIQUEEN</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{margin:0;font-family:Arial;background:#0e0f1a;color:#fff}
+.mq-btn{display:inline-block;padding:10px 16px;background:#FFD700;color:#000;text-decoration:none;border-radius:8px;font-weight:bold}
+</style>
+</head>
+<body>
+
+<!-- Empieza aquí -->
+
+</body>
+</html>`);
+
+const hero = `<section style="background:linear-gradient(135deg,#1d2040,#1a1d36);padding:80px 20px;text-align:center">
+  <h1 contenteditable="true">👑 Título Principal</h1>
+  <p contenteditable="true">Subtítulo editable aquí</p>
+  <a href="#" class="mq-btn" contenteditable="true">Llamado a la acción</a>
+</section>`;
+
+const cta = `<section style="background:#FFD700;color:#000;padding:60px 20px;text-align:center;border-radius:24px">
+  <h2 contenteditable="true">¿Listo para avanzar?</h2>
+  <p contenteditable="true">Contáctanos ahora mismo</p>
+  <a href="#" class="mq-btn" contenteditable="true">Hablar ahora</a>
+</section>`;
+
+const pricing = `<section style="padding:60px 20px">
+  <h2 contenteditable="true">Planes</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px">
+    <div style="background:#1a1d36;padding:24px;border-radius:16px" contenteditable="true">
+      <h3>Starter</h3>
+      <p>$49.000 COP</p>
+      <p>Acceso inicial</p>
+    </div>
+    <div style="background:#1a1d36;padding:24px;border-radius:16px" contenteditable="true">
+      <h3>Pro</h3>
+      <p>$99.000 COP</p>
+      <p>Auditoría completa</p>
+    </div>
+  </div>
+</section>`;
+
+const features = `<section style="padding:60px 20px">
+  <h2 contenteditable="true">Beneficios</h2>
+  <ul>
+    <li contenteditable="true">⚡ Rápido</li>
+    <li contenteditable="true">🔐 Seguro</li>
+    <li contenteditable="true">🚀 Escalable</li>
+  </ul>
+</section>`;
+
+function insert(component){
+  editor.replaceRange("\n\n"+component+"\n\n", editor.getCursor());
+}
+
+function run(){
+  const html = editor.getValue();
+  document.getElementById("preview").srcdoc = html;
+}
+
+function save(){
+  localStorage.setItem("maxiqueen-builder-live", editor.getValue());
+  alert("💾 Guardado en este navegador");
+}
+
+function clearEditor(){
+  if(confirm("¿Limpiar editor?")){
+    editor.setValue("");
+  }
+}
+
+run();
+</script>
+
+</body>
+</html>
