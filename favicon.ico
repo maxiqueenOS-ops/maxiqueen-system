@@ -1,0 +1,7 @@
+# generar favicon.ico desde PNG (ImageMagick instalado)
+magick convert .\images\favicon.png -resize 64x64 .\favicon.ico
+
+# agregar y push al repo
+git add favicon.ico
+git commit -m "Add favicon.ico"
+git push
